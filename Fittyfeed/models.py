@@ -1,5 +1,6 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
+
 
 # Create your models here.
 class Customer(models.Model):
@@ -11,30 +12,18 @@ class Customer(models.Model):
     def __str__(self):
         return str(self.name)
 
-class Category(models.Model):
+#for user page-------------------------------------------------------------
+class UserFoodItem(models.Model):
     options=(
         ('breakfast','breakfast'),
         ('lunch','lunch'),
         ('dinner','dinner'),
         ('snacks','snacks'),
     )
-    name=models.CharField(max_length=50,choices=options)
-    def __str__(self):
-        return self.name
-
-class Fooditem(models.Model):
-    name = models.CharField(max_length=200)
-    category = models.ManyToManyField(Category)
-    carbohydrate = models.DecimalField(max_digits=5,decimal_places=2,default=0)
-    fats = models.DecimalField(max_digits=5,decimal_places=2,default=0)
-    protein = models.DecimalField(max_digits=5,decimal_places=2,default=0)
-    calorie=models.DecimalField(max_digits=5,decimal_places=2,default=0,blank=True)
-    quantity = models.IntegerField(default=1,null=True,blank=True)
-    
-    def __str__(self):
-        return str(self.name)
-
-#for user page-------------------------------------------------------------
-class UserFooditem(models.Model):
-    customer = models.ManyToManyField(Customer ,blank=True)
-    fooditem=models.ManyToManyField(Fooditem)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    category = models.CharField(max_length=50, choices=options)
+    food_name = models.CharField(max_length=200)
+    food_calorie = models.FloatField()
+    food_carbs = models.FloatField()
+    food_protein = models.FloatField()
+    food_fats = models.FloatField()
