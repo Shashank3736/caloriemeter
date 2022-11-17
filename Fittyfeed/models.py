@@ -20,10 +20,15 @@ class UserFoodItem(models.Model):
         ('dinner','dinner'),
         ('snacks','snacks'),
     )
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    customer = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.CharField(max_length=50, choices=options)
     food_name = models.CharField(max_length=200)
     food_calorie = models.FloatField()
-    food_carbs = models.FloatField()
-    food_protein = models.FloatField()
-    food_fats = models.FloatField()
+    date = models.DateField(auto_now_add=True)
+
+class Comment(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+
+    def __str__(self) -> str:
+        return self.author.username

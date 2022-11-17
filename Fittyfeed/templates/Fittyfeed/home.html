@@ -1,1 +1,46 @@
-<h1>Hello World! <a href="{% url 'logout' %}">Log out!</a></h1>
+
+<html>
+  <head>
+  <title></title>
+  </head>
+<body> 
+  <h1>Hello {{ user.username.capitalize }} <a href="{% url 'logout' %}">Log out!</a></h1>
+  {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+  {% endif %}
+  <form method="POST" action="{% url 'add_food' %}">
+    {% csrf_token %}
+    {{ food_form.as_p }}
+    <input type="submit" value="Add +"/>
+  </form>
+  {% for food in food_list %}
+  <div>
+    <h1>{{ food.category }}</h1>
+    <p><strong>{{ food.food_name }}:</strong> {{ food.food_calorie }}</p>
+    <p>{{ food.date }}</p>
+    <form action="{% url 'delete_food' food.id%}" method="post">
+        {% csrf_token %}
+        <input type="submit" value="Delete"/>
+    </form>
+  </div>
+  {% endfor %}
+  <form method="POST" action="{% url 'add_comment' %}">
+    {% csrf_token %}
+    {{comment_form.as_p}}
+    <input type="submit" value="OK"/>
+  </form>
+  {% for comment in comment_list %}
+  <div>
+    <h2>{{ comment.author.username }}</h2>
+    <p>{{ comment.content }}</p>
+  </div>
+  <form action="{% url 'delete_comment' comment.id%}" method="post">
+    {% csrf_token %}
+    <input type="submit" value="Delete"/>
+  </form>
+  {% endfor %}
+</body>
