@@ -1,10 +1,19 @@
 
-<html>
-  <head>
-  <title></title>
-  </head>
-<body> 
-  <h1>Hello {{ user.username.capitalize }} <a href="{% url 'logout' %}">Log out!</a></h1>
+{% extends 'base.html' %}
+{% block content %}
+<header class="text-white bg-slate-800">
+  <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
+    <a class="flex font-medium items-center">
+      <span class="text-xl">Hello {{ user.username.capitalize }}!</span>
+    </a>
+    <button onclick="window.location.href = '{% url 'logout' %}';" class=" justify-center inline-flex items-center border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 hover:text-gray-900 absolute right-4 rounded text-xl mt-4 md:mt-0">Logout
+      <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-1" viewBox="0 0 24 24">
+        <path d="M5 12h14M12 5l7 7-7 7"></path>
+      </svg>
+    </button>
+  </div>
+</header>
+<section>
   {% if messages %}
     <ul class="messages">
         {% for message in messages %}
@@ -12,35 +21,249 @@
         {% endfor %}
     </ul>
   {% endif %}
-  <form method="POST" action="{% url 'add_food' %}">
-    {% csrf_token %}
-    {{ food_form.as_p }}
-    <input type="submit" value="Add +"/>
-  </form>
-  {% for food in food_list %}
-  <div>
-    <h1>{{ food.category }}</h1>
-    <p><strong>{{ food.food_name }}:</strong> {{ food.food_calorie }}</p>
-    <p>{{ food.date }}</p>
-    <form action="{% url 'delete_food' food.id%}" method="post">
-        {% csrf_token %}
-        <input type="submit" value="Delete"/>
-    </form>
+  <div class="container px-5 py-24 mx-auto">
+    <div class="flex flex-wrap -m-4">
+      <div class="flex flex-col text-center w-full mb-20">
+        <h2 class="text-xs text-indigo-500 tracking-widest font-medium title-font mb-1">{{ today }}</h2>
+        <h1 class="sm:text-3xl text-2xl font-medium title-font text-gray-900">Your total calorie count is <span class="text-blue-600">{{ total_calories }}</span></h1>
+      </div>
+      <div class="p-4 w-full lg:w-1/2">
+        <div class="h-full px-8 pt-16 pb-24 bg-white bg-opacity-50 border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden text-center relative">
+          <h2 class="tracking-widest font-medium mb-1">BREAKFAST</h2>
+          <div class="flex justify-center flex-col">
+            <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
+              <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
+                <div class="overflow-hidden">
+                  <table class="min-w-full">
+                    <thead class="border-b">
+                      <tr>
+                        <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4">Food</th>
+                        <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4">Calories</th>
+                        <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4">Delete</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for food in food_breakfast_list %}
+                      <tr class="border-b transition duration-300 ease-in-out hover:bg-gray-100">
+                        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                          {{ food.food_name.capitalize }}
+                        </td>
+                        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                          {{ food.food_calorie }}
+                        </td>
+                        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                          <form action="{% url 'delete_food' food.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="text-red-500 hover:text-red-900">
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                              </svg>
+                            </button>
+                          </form>
+                        </td>
+                      </tr>
+                      {% empty %}
+                      <tr class="border-b transition duration-300 ease-in-out hover:bg-gray-100">
+                        <td colspan="3" class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">No data added yet.</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                  <div class="relative w-full bottom-0">
+                    <form action="{% url 'add_food_cat' 'breakfast' %}" method="post">
+                      {% csrf_token %}
+                      {{ food_form_cat.as_p }}
+                      <button type="submit" class="flex absolute inset-y-0 right-0 items-center pr-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-500  hover:text-gray-900">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 w-full lg:w-1/2">
+        <div class="h-full px-8 pt-16 pb-24 bg-white bg-opacity-50 border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden text-center relative">
+          <h2 class="tracking-widest font-medium mb-1">LUNCH</h2>
+          <div class="flex justify-center flex-col">
+            <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
+              <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
+                <div class="overflow-hidden">
+                  <table class="min-w-full">
+                    <thead class="border-b">
+                      <tr>
+                        <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4">Food</th>
+                        <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4">Calories</th>
+                        <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4">Delete</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for food in food_lunch_list %}
+                      <tr class="border-b transition duration-300 ease-in-out hover:bg-gray-100">
+                        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                          {{ food.food_name.capitalize }}
+                        </td>
+                        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                          {{ food.food_calorie }}
+                        </td>
+                        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                          <form action="{% url 'delete_food' food.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="text-red-500 hover:text-red-900">
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                              </svg>
+                            </button>
+                          </form>
+                        </td>
+                      </tr>
+                      {% empty %}
+                      <tr class="border-b transition duration-300 ease-in-out hover:bg-gray-100">
+                        <td colspan="3" class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">No data added yet.</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                  <div class="relative w-full">
+                    <form action="{% url 'add_food_cat' 'lunch' %}" method="post">
+                      {% csrf_token %}
+                      {{ food_form_cat.as_p }}
+                      <button type="submit" class="flex absolute inset-y-0 right-0 items-center pr-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-500  hover:text-gray-900">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 w-full lg:w-1/2">
+        <div class="h-full px-8 pt-16 pb-24 bg-white bg-opacity-50 border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden text-center relative">
+          <h2 class="tracking-widest font-medium mb-1">SNACKS</h2>
+          <div class="flex justify-center flex-col">
+            <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
+              <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
+                <div class="overflow-hidden">
+                  <table class="min-w-full">
+                    <thead class="border-b">
+                      <tr>
+                        <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4">Food</th>
+                        <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4">Calories</th>
+                        <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4">Delete</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for food in food_snacks_list %}
+                      <tr class="border-b transition duration-300 ease-in-out hover:bg-gray-100">
+                        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                          {{ food.food_name.capitalize }}
+                        </td>
+                        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                          {{ food.food_calorie }}
+                        </td>
+                        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                          <form action="{% url 'delete_food' food.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="text-red-500 hover:text-red-900">
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                              </svg>
+                            </button>
+                          </form>
+                        </td>
+                      </tr>
+                      {% empty %}
+                      <tr class="border-b transition duration-300 ease-in-out hover:bg-gray-100">
+                        <td colspan="3" class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">No data added yet.</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                  <div class="relative w-full">
+                    <form action="{% url 'add_food_cat' 'snacks' %}" method="post">
+                      {% csrf_token %}
+                      {{ food_form_cat.as_p }}
+                      <button type="submit" class="flex absolute inset-y-0 right-0 items-center pr-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-500  hover:text-gray-900">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 w-full lg:w-1/2">
+        <div class="h-full px-8 pt-16 pb-24 bg-white bg-opacity-50 border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden text-center relative">
+          <h2 class="tracking-widest font-medium mb-1">DINNER</h2>
+          <div class="flex justify-center flex-col">
+            <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
+              <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
+                <div class="overflow-hidden">
+                  <table class="min-w-full">
+                    <thead class="border-b">
+                      <tr>
+                        <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4">Food</th>
+                        <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4">Calories</th>
+                        <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4">Delete</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for food in food_dinner_list %}
+                      <tr class="border-b transition duration-300 ease-in-out hover:bg-gray-100">
+                        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                          {{ food.food_name.capitalize }}
+                        </td>
+                        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                          {{ food.food_calorie }}
+                        </td>
+                        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                          <form action="{% url 'delete_food' food.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="text-red-500 hover:text-red-900">
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                              </svg>
+                            </button>
+                          </form>
+                        </td>
+                      </tr>
+                      {% empty %}
+                      <tr class="border-b transition duration-300 ease-in-out hover:bg-gray-100">
+                        <td colspan="3" class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">No data added yet.</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                  <div class="relative w-full">
+                    <form action="{% url 'add_food_cat' 'dinner' %}" method="post">
+                      {% csrf_token %}
+                      {{ food_form_cat.as_p }}
+                      <button type="submit" class="flex absolute inset-y-0 right-0 items-center pr-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-500  hover:text-gray-900">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  {% endfor %}
-  <form method="POST" action="{% url 'add_comment' %}">
-    {% csrf_token %}
-    {{comment_form.as_p}}
-    <input type="submit" value="OK"/>
-  </form>
-  {% for comment in comment_list %}
-  <div>
-    <h2>{{ comment.author.username }}</h2>
-    <p>{{ comment.content }}</p>
-  </div>
-  <form action="{% url 'delete_comment' comment.id%}" method="post">
-    {% csrf_token %}
-    <input type="submit" value="Delete"/>
-  </form>
-  {% endfor %}
-</body>
+</section>
+{% endblock %}
