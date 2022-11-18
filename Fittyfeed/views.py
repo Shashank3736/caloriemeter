@@ -42,7 +42,7 @@ def add_food_cat(request, category):
                 else:
                     messages.error(request, 'No data available.')
             except Exception as e:
-                messages.error(request, 'OOps! some error occured')
+                messages.error(request, f'Not able to find aby food with name "{food_name}".')
                 print(e)
             return redirect('home')
 
