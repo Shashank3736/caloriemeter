@@ -95,3 +95,24 @@ def home(request):
     }
 
     return render(request, 'Fittyfeed/home.html', context)
+
+@login_required(login_url='login')
+def home(request):
+    foods = UserFoodItem.objects.filter(customer=request.user, date=timezone.now())
+    total_cal = 0
+
+    for food in foods:
+        total_cal += food.food_calorie
+    context = {
+        'food_form': AddFoodForm,
+        'food_form_cat':AddFoodFormWithoutCategory,
+        'food_list': foods,
+        'food_breakfast_list': foods.filter(category='breakfast'),
+        'total_calories': round(total_cal, 2),
+        'food_lunch_list': foods.filter(category='lunch'),
+        'food_snacks_list': foods.filter(category='snacks'),
+        'food_dinner_list': foods.filter(category='dinner'),
+        'today': timezone.localdate()
+    }
+
+    return render(request, 'Fittyfeed/home.html', context)
