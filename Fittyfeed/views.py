@@ -15,7 +15,7 @@ def delete_food(request, id):
     return redirect('home')
 
 @login_required(login_url='login')
-def add_food_cat(request, category):
+def add_food_cat(request, category, date):
     if category not in ('breakfast', 'lunch', 'dinner', 'snacks'):
         return redirect('home')
     
@@ -36,7 +36,7 @@ def add_food_cat(request, category):
                         food_name = food_name, 
                         category = category,
                         food_calorie = cal,
-                        date = timezone.localdate()
+                        date = timezone.datetime.fromisoformat(date).date()
                     )
                     food.save()
                 else:
@@ -44,7 +44,10 @@ def add_food_cat(request, category):
             except Exception as e:
                 messages.error(request, f'Not able to find aby food with name "{food_name}".')
                 print(e)
-            return redirect('home')
+            
+            if timezone.localdate().isoformat() == date:
+                return redirect('home')
+            return redirect('on_date', date)
 
 @login_required(login_url='login')
 def add_food(request):
@@ -76,22 +79,24 @@ def add_food(request):
             return redirect('home')
 
 @login_required(login_url='login')
-def home(request):
-    foods = UserFoodItem.objects.filter(customer=request.user, date=timezone.now())
+def home_with_date(request, date):
+    foods = UserFoodItem.objects.filter(customer=request.user, date=timezone.datetime.fromisoformat(date))
     total_cal = 0
 
     for food in foods:
         total_cal += food.food_calorie
     context = {
         'food_form': AddFoodForm,
-        'food_form_cat':AddFoodFormWithoutCategory,
+        'food_form_cat': AddFoodFormWithoutCategory,
         'food_list': foods,
         'food_breakfast_list': foods.filter(category='breakfast'),
         'total_calories': round(total_cal, 2),
         'food_lunch_list': foods.filter(category='lunch'),
         'food_snacks_list': foods.filter(category='snacks'),
         'food_dinner_list': foods.filter(category='dinner'),
-        'today': timezone.localdate()
+        'today': timezone.datetime.fromisoformat(date).date(),
+        'prev_day': timezone.datetime.fromisoformat(date).date() - timezone.timedelta(days=1),
+        'next_day': timezone.datetime.fromisoformat(date).date() + timezone.timedelta(days=1),
     }
 
     return render(request, 'Fittyfeed/home.html', context)
@@ -104,7 +109,6 @@ def home(request):
     for food in foods:
         total_cal += food.food_calorie
     context = {
-        'food_form': AddFoodForm,
         'food_form_cat':AddFoodFormWithoutCategory,
         'food_list': foods,
         'food_breakfast_list': foods.filter(category='breakfast'),
@@ -112,7 +116,9 @@ def home(request):
         'food_lunch_list': foods.filter(category='lunch'),
         'food_snacks_list': foods.filter(category='snacks'),
         'food_dinner_list': foods.filter(category='dinner'),
-        'today': timezone.localdate()
+        'today': timezone.localdate(),
+        'prev_day': timezone.localdate() - timezone.timedelta(days=1),
+        'next_day': timezone.localdate() + timezone.timedelta(days=1),
     }
 
     return render(request, 'Fittyfeed/home.html', context)
