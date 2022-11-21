@@ -12,14 +12,15 @@
         }
     </script>
     <title>{% block title %}Calorimeter{% endblock %}</title>
+    <link rel="icon" href="{% static 'logo/icon.png' %}">
 </head>
 <body class="">
     {% block content %}{% endblock %}
     {% block footer %}
-    <footer class="text-gray-600 body-font bottom-0 fixed w-full h-20 bg-white">
-        <div class="container px-5 py-8 mx-auto flex items-center sm:flex-row flex-col relative">
+    <footer class="text-gray-600 body-font bottom-0 lg:fixed lg:w-full lg:h-20 lg:bg-white">
+        <div class="container px-5 py-8 mx-auto flex items-center sm:flex-row flex-col lg:relative">
           <a class="flex title-font font-medium items-center md:justify-start justify-center text-gray-900">
-            <img class="rounded-full" alt="logo" src="{% static 'logo/logo.jpeg' %}" width="28">
+            <img class="rounded-full" alt="logo" src="{% static 'logo/icon.png' %}" width="28">
             <span class="ml-3 text-xl">Shreyash Raj</span>
           </a>
           <p class="text-sm text-gray-500 sm:ml-4 sm:pl-4 sm:border-l-2 sm:border-gray-200 sm:py-2 sm:mt-0 mt-4">© 2022 Shreyash Raj & Team</p>
