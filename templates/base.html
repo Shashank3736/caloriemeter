@@ -1,4 +1,4 @@
-<!-- {% load static %} -->
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,7 +12,7 @@
         }
     </script>
     <title>{% block title %}Calorimeter{% endblock %}</title>
-    <link rel="icon" href="{% static 'logo/icon.png' %}">
+    <link rel="icon" type="image/png" href="{% static 'logo/icon.png' %}">
 </head>
 <body class="">
     {% block content %}{% endblock %}
