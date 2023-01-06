@@ -4,10 +4,12 @@ import Footer from './containers/Footer'
 import Main from './containers/Main'
 import Navbar from './containers/Navbar'
 
+
+
 const App = () => {
   return (
     <>
-    <Navbar name="Shreyash21"/>
+    <Navbar name='{user_name}'/>
     <Main />
     <Footer />
     </>

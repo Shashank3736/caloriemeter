@@ -2,10 +2,14 @@ import React from 'react'
 import icon from '../assets/icon.png'
 import { SiDiscord, SiInstagram, SiLinkedin, SiTwitter } from 'react-icons/si'
 
-const IconLink = ({ link, icon, color='text-blue-500' }) => {
-    const cn = `ml-3 text-gray-500 hover:${color}`
-    return (
-        <a className={cn} href={link}>
+const IconLink = ({ link, icon, ispink=false }) => {
+    if(ispink) return (
+        <a className='ml-3 text-gray-500 hover:text-pink-500' href={link}>
+            {icon}
+        </a>
+    )
+    else return (
+        <a className='ml-3 text-gray-500 hover:text-blue-500' href={link}>
             {icon}
         </a>
     )
@@ -25,7 +29,7 @@ const Footer = () => {
             <div className='inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start'>
                 <IconLink link="https://discord.gg/MurmgRTkDy" icon={<SiDiscord className='w-5 h-5' />} />
                 <IconLink link="https://twitter.com/Shashank3736" icon={<SiTwitter className='w-5 h-5' />} />
-                <IconLink link="https://www.instagram.com/G8RajShreyash/" icon={<SiInstagram className='w-5 h-5' />} color='text-pink-500' />
+                <IconLink link="https://www.instagram.com/G8RajShreyash/" icon={<SiInstagram className='w-5 h-5' />} ispink={true} />
                 <IconLink link="https://www.linkedin.com/in/shreyash-raj-994b92249/" icon={<SiLinkedin className='w-5 h-5' />} />
             </div>
         </div>
