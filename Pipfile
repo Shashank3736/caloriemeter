@@ -5,12 +5,10 @@ name = "pypi"
 
 [packages]
 django = "*"
-django-filter = "*"
-requests = "*"
-python-dotenv = "*"
-whitenoise = "*"
+django-rest-framework = "*"
+django-cors-headers = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.10"
+python_version = "3.11"
