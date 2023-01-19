@@ -8,7 +8,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
         fields = ('url', 'id', 'username', 'email', 'password', 'max_calories')
-        extra_kwargs = {'password': {'write_only': True}}
+        extra_kwargs = {'password': {'write_only': True}, 'email': {'write_only': True}}
     
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
@@ -16,10 +16,11 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     
     def update(self, instance, validated_data):
         super().update(instance, validated_data)
-        password = validated_data.get('password', instance.password)
-        user = User.objects.get(username=instance.username)
-        user.set_password(password)
-        user.save()
+        password = validated_data.get('password', None)
+        if password:
+            user = User.objects.get(username=instance.username)
+            user.set_password(password)
+            user.save()
         return instance
     
     def get_max_calories(self, obj):
