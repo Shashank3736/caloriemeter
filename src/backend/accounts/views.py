@@ -13,10 +13,20 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
     permission_classes = [IsOwnerOrReadOnly]
+    partial = True
     
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
     def me(self, request):
         user = User.objects.get(id=request.user.id)
+        serializer = self.get_serializer(user, many=False)
+        return Response(serializer.data)
+    
+    @action(detail=False, methods=['get', 'post'], permission_classes=[permissions.IsAuthenticated])
+    def max_calories(self, request):
+        user = request.user
+        if request.method == 'POST':
+            user.max_calories = request.data['max_calories']
+            user.save()
         serializer = self.get_serializer(user, many=False)
         return Response(serializer.data)
 
@@ -32,8 +42,7 @@ class DeleteTokenGeneric(viewsets.GenericViewSet, generics.DestroyAPIView):
 class CustomAuthToken(ObtainAuthToken):
 
     def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data,
-                                           context={'request': request})
+        serializer = self.serializer_class(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
