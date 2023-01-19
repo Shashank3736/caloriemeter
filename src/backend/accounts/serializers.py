@@ -4,9 +4,10 @@ from .models import CustomUser as User
 from rest_framework.authtoken.models import Token
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
+    max_calories = serializers.SerializerMethodField()
     class Meta:
         model = User
-        fields = ('id', 'url', 'username', 'email', 'password')
+        fields = ('url', 'id', 'username', 'email', 'password', 'max_calories')
         extra_kwargs = {'password': {'write_only': True}}
     
     def create(self, validated_data):
@@ -20,6 +21,9 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         user.set_password(password)
         user.save()
         return instance
+    
+    def get_max_calories(self, obj):
+        return obj.max_calories if self.context['request'].user.id == obj.id else None
 
 class TokenSerializer(serializers.ModelSerializer):
     class Meta:
