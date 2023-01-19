@@ -1,10 +1,12 @@
 from accounts.views import UserViewSet, TokenViewSet, CustomAuthToken
+from caloriecounter.views import UserFoodItemViewSet
 from rest_framework import routers
 from django.urls import path, include
 
 router = routers.DefaultRouter()
 router.register(r'users', UserViewSet)
 router.register(r'user_token', TokenViewSet)
+router.register(r'user_food_items', UserFoodItemViewSet, basename='user_food_items')
 
 urlpatterns = [
     path('', include(router.urls)),
