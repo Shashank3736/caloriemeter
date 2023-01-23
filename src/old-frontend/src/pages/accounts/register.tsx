@@ -1,9 +1,10 @@
 'use client'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Visibility, VisibilityOff } from '@mui/icons-material'
-import { Box, Button, FormControl, IconButton, Input, InputAdornment, InputLabel, Link, Paper, TextField, Typography } from '@mui/material'
+import { Alert, Box, Button, FormControl, IconButton, Input, InputAdornment, InputLabel, Link, Paper, Snackbar, TextField, Typography } from '@mui/material'
 import React from 'react'
 import AccountsLayout from '@/layout/AccountLayout';
+import { create_user } from '@/utils/api';
 
 export default function RegisterPage() {
   const [state, setState] = useState({
@@ -12,7 +13,8 @@ export default function RegisterPage() {
     password_2: '',
     email: '',
     show_password: false,
-    is_authenticated: false
+    is_authenticated: false,
+    error: null
   })
   const handleChange: React.FormEventHandler<HTMLInputElement> = (event) => {
     if (event) {
@@ -40,7 +42,19 @@ export default function RegisterPage() {
 
   function handleSubmit(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault()
+    create_user({ username: state.username, password: state.password_1, email: state.email }).then((res) => {
+      setState({ ...state, is_authenticated: true })
+    }).catch((err) => {
+      console.log(err)
+      setState({ ...state, error: err })
+    })
   }
+
+  if (state.is_authenticated) window.location.replace('/')
+  useEffect(() => {
+    if (state.is_authenticated) window.location.replace('/')
+    if (localStorage.getItem('token') && localStorage.getItem('id')) window.location.replace('/')
+  }, [state.is_authenticated])
   return (
     <AccountsLayout>
         <Paper className='absolute left-1/2 top-1/2 translate-x-[-50%] translate-y-[-50%] min-w-[350px] min-h-[350px] w-1/2 p-5 md:rounded'>
@@ -71,6 +85,10 @@ export default function RegisterPage() {
                 </div>
             </Box>
         </Paper>
+        {state.error &&
+        <Snackbar open={true} autoHideDuration={6000}>
+          <Alert severity='error' sx={{ width: '100%' }}>{state.error}</Alert>
+        </Snackbar>}
     </AccountsLayout>
   );
 }
