@@ -6,7 +6,7 @@ from django.urls import path, include
 router = routers.DefaultRouter()
 router.register(r'users', UserViewSet)
 router.register(r'user_token', TokenViewSet)
-router.register(r'user_food_items', UserFoodItemViewSet, basename='user_food_items')
+router.register(r'foods', UserFoodItemViewSet, basename='user_food_items')
 
 urlpatterns = [
     path('', include(router.urls)),
