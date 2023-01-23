@@ -3,14 +3,14 @@ import JSONbig from 'json-bigint';
 
 const BASE_URL = 'http://127.0.0.1:8000/api';
 
-type User = {
+export type User = {
     id: string;
     username: string;
     email: string | null;
     max_calories: number | null;
 };
 
-type Food = {
+export type Food = {
     id: string;
     name: string;
     date: string;
