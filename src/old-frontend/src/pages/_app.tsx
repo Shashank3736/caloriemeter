@@ -1,3 +1,4 @@
+'use client'
 import '@/styles/globals.css'
 import type { AppProps } from 'next/app'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -8,7 +9,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 
 export default function App({ Component, pageProps }: AppProps) {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-  const [mode, setMode] = useState(prefersDarkMode ? 'dark' : 'light');
+  const [mode, setMode] = useState('light');
   const theme = createTheme({
     palette: {
       mode: mode === 'light' ? 'light' : 'dark',
@@ -19,9 +20,13 @@ export default function App({ Component, pageProps }: AppProps) {
     const newMode = mode === 'light' ? 'dark' : 'light';
     setMode(newMode);
     window.localStorage.setItem('mode', newMode);
-    document.body.classList.toggle('dark');
+    console.log('toggleMode line 23')
+    if(newMode === 'dark') {
+      document.body.classList.add('dark');
+    } else {
+      document.body.classList.remove('dark');
+    }
   }
-
   useEffect(() => {
     const localMode = window.localStorage.getItem('mode');
     if (localMode) {
@@ -29,8 +34,11 @@ export default function App({ Component, pageProps }: AppProps) {
       if (localMode === 'dark') {
         document.body.classList.add('dark');
       }
+    } else if (prefersDarkMode) {
+      setMode('dark');
+      document.body.classList.add('dark');
     }
-  }, [])
+  }, [prefersDarkMode])
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
