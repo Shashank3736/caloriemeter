@@ -1,8 +1,9 @@
 'use client'
 import AccountsLayout from "@/layout/AccountLayout";
+import { get_token } from "@/utils/api";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Box, Button, FormControl, IconButton, Input, InputAdornment, InputLabel, Paper, TextField, Tooltip, Typography, Link } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function LoginPage() {
     const [state, setState] = useState({
@@ -10,6 +11,7 @@ export default function LoginPage() {
         password: '',
         show_password: false,
         wrong_attempts: 0,
+        is_authenticated: false,
     });
 
     function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -32,7 +34,25 @@ export default function LoginPage() {
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
+        get_token({ username: state.username, password: state.password}).then((res) => {
+            localStorage.setItem('token', res.token);
+            localStorage.setItem('id', res.user_id);
+            setState({ ...state, is_authenticated: true });
+        }).catch((err) => {
+            setState({
+                ...state,
+                wrong_attempts: state.wrong_attempts + 1,
+            });
+        })
     }
+
+    useEffect(() => {
+        if(state.is_authenticated) window.location.replace('/')
+        if(localStorage.getItem('token') && localStorage.getItem('id')) window.location.replace('/')
+    }, [state.is_authenticated])
+
+    if(state.is_authenticated) window.location.replace('/')
+    
     return (
         <AccountsLayout>
             <Paper className='absolute left-1/2 top-1/2 translate-x-[-50%] translate-y-[-50%] min-w-[350px] min-h-[350px] w-1/2 p-5 md:rounded'>
