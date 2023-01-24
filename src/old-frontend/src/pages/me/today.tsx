@@ -1,11 +1,19 @@
 import MainLayout from '@/layout/MainLayout'
 import { Food, create_food, delete_food, get_today_foods, get_user } from '@/utils/api'
-import { AddCircle, Close, Delete } from '@mui/icons-material'
-import { Alert, Button, Container, Divider, FormControl, FormGroup, IconButton, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, Snackbar, TextField, Tooltip, Typography } from '@mui/material'
+import { AddCircle , Delete } from '@mui/icons-material'
+import { Container, Divider, FormControl, FormGroup, IconButton, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, Snackbar, TextField, Tooltip, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import React from 'react'
 import { CircularProgressbarWithChildren, buildStyles } from 'react-circular-progressbar'
 import 'react-circular-progressbar/dist/styles.css';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
+
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+  props,
+  ref,
+) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 type Props = {
     darkMode: 'light' | 'dark'
@@ -19,9 +27,10 @@ const Today = ({ darkMode, toggleDarkMode }: Props) => {
         foods: [],
         max_calories: 2000,
         calories: 0,
+        error: null
     });
 
-    const CATEG = ['breakfast', 'lunch', 'dinner', 'snacks']
+    const CATEG = ['breakfast', 'lunch', 'snacks', 'dinner']
 
     const handleTypeChange = (event: SelectChangeEvent) => {
         setState({
@@ -47,7 +56,18 @@ const Today = ({ darkMode, toggleDarkMode }: Props) => {
                 ...state,
                 food: '',
                 foodType: '',
+                error: err
             })
+        })
+    }
+
+    function handleErrorClose(event?: React.SyntheticEvent | Event, reason?: string) {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setState({
+            ...state,
+            error: null
         })
     }
 
@@ -60,6 +80,12 @@ const Today = ({ darkMode, toggleDarkMode }: Props) => {
                 ...state,
                 foods,
                 calories: state.calories - calorie
+            })
+        }).catch((err) => {
+            console.log(err)
+            setState({
+                ...state,
+                error: err
             })
         })
     }
@@ -154,6 +180,11 @@ const Today = ({ darkMode, toggleDarkMode }: Props) => {
                 })}
             </Box>
         </Container>
+        <Snackbar open={Boolean(state.error)} autoHideDuration={6000} onClose={handleErrorClose}>
+            <Alert onClose={handleErrorClose} severity='error'>
+                {state.error}
+            </Alert>
+        </Snackbar>
     </MainLayout>
   )
 }
