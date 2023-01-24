@@ -13,6 +13,12 @@ export default function App({ Component, pageProps }: AppProps) {
   const theme = createTheme({
     palette: {
       mode: mode === 'light' ? 'light' : 'dark',
+      ...(mode === 'light' ? {} : {
+        background: {
+          default: '#23272a',
+          paper: '#2c2f33',
+        }
+      })
     }
   });
 
