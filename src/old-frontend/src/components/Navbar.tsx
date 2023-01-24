@@ -32,6 +32,7 @@ const Navbar = ({darkMode, toggleDarkMode}: {darkMode: 'light' | 'dark', toggleD
         localStorage.removeItem('token')
         localStorage.removeItem('id')
         localStorage.removeItem('mode')
+        window.location.reload()
         setUser(null)
     };
     useEffect(() => {
