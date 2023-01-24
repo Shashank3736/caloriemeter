@@ -1,5 +1,5 @@
 import MainLayout from '@/layout/MainLayout'
-import { Food, create_food, delete_food, get_today_foods, get_user } from '@/utils/api'
+import { Food, User, create_food, delete_food, get_today_foods, get_user } from '@/utils/api'
 import { AddCircle , Delete } from '@mui/icons-material'
 import { Container, Divider, FormControl, FormGroup, IconButton, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, Snackbar, Table, TableBody, TableCell, TableHead, TableRow, TextField, Tooltip, Typography, styled, tableCellClasses } from '@mui/material'
 import { Box } from '@mui/system'
@@ -120,19 +120,15 @@ const Today = ({ darkMode, toggleDarkMode }: Props) => {
             res.forEach((food: Food) => {
                 calories += food.calorie
             })
-            setState({
-                ...state,
-                foods: res,
-                calories
-            })
-        }).catch((err) => {
-            console.log(err)
-        })
-
-        get_user({ token, id }).then((res) => {
-            setState({
-                ...state,
-                max_calories: res.max_calories
+            get_user({ token, id }).then((user: User) => {
+                setState({
+                    ...state,
+                    max_calories: user.max_calories || 2000,
+                    foods: res,
+                    calories
+                })
+            }).catch((err) => {
+                console.log(err)
             })
         }).catch((err) => {
             console.log(err)
