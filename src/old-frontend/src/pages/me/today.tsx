@@ -1,7 +1,7 @@
 import MainLayout from '@/layout/MainLayout'
 import { Food, create_food, delete_food, get_today_foods, get_user } from '@/utils/api'
 import { AddCircle , Delete } from '@mui/icons-material'
-import { Container, Divider, FormControl, FormGroup, IconButton, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, Snackbar, TextField, Tooltip, Typography } from '@mui/material'
+import { Container, Divider, FormControl, FormGroup, IconButton, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, Snackbar, Table, TableBody, TableCell, TableHead, TableRow, TextField, Tooltip, Typography, styled, tableCellClasses } from '@mui/material'
 import { Box } from '@mui/system'
 import React from 'react'
 import { CircularProgressbarWithChildren, buildStyles } from 'react-circular-progressbar'
@@ -14,6 +14,27 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 ) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+    },
+    [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+    },
+}));
+  
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    '&:nth-of-type(odd)': {
+    backgroundColor: theme.palette.action.hover,
+    },
+    // hide last border
+    '&:last-child td, &:last-child th': {
+    border: 0,
+    },
+}));
+
 
 type Props = {
     darkMode: 'light' | 'dark'
@@ -128,7 +149,7 @@ const Today = ({ darkMode, toggleDarkMode }: Props) => {
                     pathColor: state.max_calories >= state.calories ? '#3b82f6' : '#ef4444',
                     textColor: state.max_calories >= state.calories ? '#3b82f6' : '#ef4444',
                 })} value={state.calories*100/state.max_calories}>
-                    {state.max_calories >= state.calories ? <Typography variant='h6' className='font-bold'>{(state.calories*100/state.max_calories).toFixed(2)}%</Typography> : <Typography variant='h6' className='font-bold'>Over</Typography>}
+                    {state.max_calories >= state.calories ? <Typography variant='h6' className='font-bold text-blue-500'>{(state.calories*100/state.max_calories).toFixed(2)}%</Typography> : <Typography variant='h6' className='font-bold text-red-500'>Over</Typography>}
                 </CircularProgressbarWithChildren>
             </Box>
             <Divider className='my-5' />
@@ -138,8 +159,8 @@ const Today = ({ darkMode, toggleDarkMode }: Props) => {
                     <Select id='select-food-type' labelId='food-type' label='Type' value={state.foodType} onChange={handleTypeChange}>
                         <MenuItem value='breakfast'>Breakfast</MenuItem>
                         <MenuItem value='lunch'>Lunch</MenuItem>
-                        <MenuItem value='dinner'>Dinner</MenuItem>
                         <MenuItem value='snacks'>Snacks</MenuItem>
+                        <MenuItem value='dinner'>Dinner</MenuItem>
                     </Select>
                 </FormControl>
                 <TextField label='Food' value={state.food} variant='outlined' className='w-[30vw] min-w-[200px]' 
@@ -158,21 +179,37 @@ const Today = ({ darkMode, toggleDarkMode }: Props) => {
                 {CATEG.map((categ) => {
                     return (
                         <Box key={categ} className='p-4 w-full md:w-1/2'>
-                            <Paper className='h-full p-4 m-4 rounded'>
+                            <Paper className='h-full p-4 rounded'>
                                 <Typography variant='body2' className='text-center p-4 font-semibold'>{categ.toUpperCase()}</Typography>
                                 <Divider />
-                                {state.foods.filter((food: Food) => food.category === categ).map((food: Food) => {
-                                    return (
-                                        <>
-                                        <Box key={food.id} className='flex items-center justify-between px-8 py-1'>
-                                            <Typography>{food.name}</Typography>
-                                            <Typography>{food.calorie} kcal</Typography>
-                                            <IconButton onClick={() => deleteFood(food.id, food.calorie)} color='error'><Delete /></IconButton>
-                                        </Box>
-                                        <Divider />
-                                        </>
-                                    )
-                                })}
+                                <Table aria-label="customized table">
+                                    <TableHead>
+                                        <TableRow>
+                                            <StyledTableCell>Food</StyledTableCell>
+                                            <StyledTableCell align="center">Calorie</StyledTableCell>
+                                            <StyledTableCell align="center">Delete</StyledTableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {state.foods.filter((food: Food) => food.category === categ).map((food: Food) => {
+                                            return (
+                                                <StyledTableRow key={food.id}>
+                                                    <StyledTableCell component="th" scope="row">
+                                                        {food.name}
+                                                    </StyledTableCell>
+                                                    <StyledTableCell align="center">{food.calorie} kcal</StyledTableCell>
+                                                    <StyledTableCell align="center">
+                                                        <Tooltip title='Delete Food'>
+                                                            <IconButton onClick={() => deleteFood(food.id, food.calorie)} color='error'>
+                                                                <Delete />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </StyledTableCell>
+                                                </StyledTableRow>
+                                            )
+                                        })}
+                                    </TableBody>
+                                </Table>
                                 {state.foods.filter((food: Food) => food.category === categ).length === 0 && <Typography variant='caption' className='flex justify-center py-3 text-gray-400'>No food added</Typography>}
                             </Paper>
                         </Box>
