@@ -103,10 +103,12 @@ const Navbar = ({darkMode, toggleDarkMode}: {darkMode: 'light' | 'dark', toggleD
                         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                     >
-                        
+                        <MenuItem className='flex items-center justify-center'>
+                            User: {user.username}
+                        </MenuItem>
                         <MenuItem onClick={(e) => {
-                            e.stopPropagation();
                             toggleDarkMode();
+                            e.stopPropagation();
                         }}>
                             <FormControlLabel
                             value='darkMode'
