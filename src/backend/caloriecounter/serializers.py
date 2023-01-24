@@ -22,7 +22,7 @@ class UserFoodItemSerializer(serializers.ModelSerializer):
                 cal = 0
                 for data in api:
                     cal += data['calories']
-                validated_data['calorie'] = cal
+                validated_data['calorie'] = round(cal, 2)
             return super().create(validated_data)
         except:
             raise serializers.ValidationError({'name': 'Food not found.'})
