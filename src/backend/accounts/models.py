@@ -7,6 +7,7 @@ class CustomUser(AbstractUser):
     id = models.BigAutoField(primary_key=True)
     email = models.EmailField(unique=True)
     max_calories = models.FloatField(default=2_000)
+    profile = models.ImageField(upload_to='static/profile_pics', blank=True, null=True)
 
     def __str__(self):
         return self.username

@@ -6,7 +6,7 @@ from rest_framework.authtoken.models import Token
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ('url', 'id', 'username', 'email', 'password', 'max_calories')
+        fields = ('url', 'id', 'username', 'email', 'password', 'max_calories', 'profile')
         extra_kwargs = {'password': {'write_only': True}}
     
     def create(self, validated_data):
