@@ -1,6 +1,8 @@
 import Head from 'next/head'
-import { Button } from '@mui/material'
+import { Button, Container, Divider, Paper, Step, StepContent, StepLabel, Stepper, Typography } from '@mui/material'
 import MainLayout from '@/layout/MainLayout'
+import { useState } from 'react'
+import { Box } from '@mui/system'
 
 type Props = {
   darkMode: 'light' | 'dark'
@@ -8,6 +10,28 @@ type Props = {
 }
 
 export default function Home({ darkMode, toggleDarkMode }: Props) {
+  const [activeStep, setActiveStep] = useState(0)
+  const steps = [{
+    label: 'Create an account',
+    description: 'Create an account to get started',
+  }, {
+    label: 'Add your food',
+    description: 'Add your food to get started',
+  }, {
+    label: 'Track your progress',
+    description: 'Track your progress to get started',
+  }]
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const handleReset = () => {
+    setActiveStep(0);
+  };
   return (
     <>
       <Head>
@@ -17,10 +41,73 @@ export default function Home({ darkMode, toggleDarkMode }: Props) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <MainLayout darkMode={darkMode} toggleDarkMode={toggleDarkMode}>
-        <div className='flex items-center m-5 space-x-3'>
-          <p className='text-3xl font-bold underline text-green-500 dark:text-red-900'>Hello World!</p>
-          <Button className='text-xl py-2 font-bold' variant="contained" onClick={toggleDarkMode}>{darkMode === 'light' ? 'Light' : 'Dark'}</Button>
-        </div>
+        <Container>
+          <section className='flex flex-col lg:flex-row justify-center items-center overflow-auto py-10'>
+            <div className='text-center'>
+            <Typography fontWeight={600} variant="h2">
+              Your Health
+            </Typography>
+            <Typography className='text-blue-600 dark:text-blue-400' fontWeight={600} variant="h2">
+              Your Way
+            </Typography>
+            </div>
+            {/* // eslint-disable-next-line @next/next/no-img-element */}
+            <img src='/robot-serving-food.svg' className='overflow-auto max-w-2xl' alt='home' />
+          </section>
+          <section className='flex flex-col justify-center items-center overflow-auto py-10'>
+            <Typography fontWeight={600} variant="h2">How it <span className='text-blue-600 dark:text-blue-400'>works?</span></Typography>
+            <Divider className='w-full py-4' />
+            <div className='w-full h-full flex flex-col-reverse lg:flex-row justify-center items-center overflow-auto lg:pt-0 pt-4'>
+              <img src='/indian-mother-making-sweets.svg' className='overflow-auto max-w-2xl' alt='mother-cooking-home' />
+              <div className='overflow-auto lg:w-1/2'>
+                <Stepper activeStep={activeStep} orientation="vertical">
+                  {steps.map((step, index) => (
+                    <Step key={step.label}>
+                    <StepLabel
+                      optional={
+                        index === (steps.length - 1) ? (
+                          <Typography variant="caption">Last step</Typography>
+                        ) : null
+                      }
+                    >
+                      {step.label}
+                    </StepLabel>
+                    <StepContent>
+                      <Typography>{step.description}</Typography>
+                      <Box sx={{ mb: 2 }}>
+                        <div>
+                          <Button
+                            variant="contained"
+                            onClick={handleNext}
+                            sx={{ mt: 1, mr: 1 }}
+                          >
+                            {index === steps.length - 1 ? 'Finish' : 'Continue'}
+                          </Button>
+                          <Button
+                            disabled={index === 0}
+                            onClick={handleBack}
+                            sx={{ mt: 1, mr: 1 }}
+                          >
+                            Back
+                          </Button>
+                        </div>
+                      </Box>
+                    </StepContent>
+                  </Step>
+                  ))}
+                </Stepper>
+              {activeStep === steps.length && (
+                <Paper square elevation={0} sx={{ p: 3 }}>
+                  <Typography>All steps completed - you&apos;re finished</Typography>
+                  <Button onClick={handleReset} sx={{ mt: 1, mr: 1 }}>
+                    Reset
+                  </Button>
+                </Paper>
+              )}  
+              </div>
+            </div>
+          </section>
+        </Container>
       </MainLayout>
     </>
   )
