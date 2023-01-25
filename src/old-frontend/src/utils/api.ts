@@ -1,5 +1,6 @@
 import axios, { AxiosError } from 'axios';
 import JSONbig from 'json-bigint';
+import { Url } from 'url';
 
 const BASE_URL = 'http://127.0.0.1:8000/api';
 
@@ -8,6 +9,7 @@ export type User = {
     username: string;
     email: string | null;
     max_calories: number | null;
+    profile: Url | null;
 };
 
 export type Food = {

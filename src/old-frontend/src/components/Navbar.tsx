@@ -66,7 +66,7 @@ const Navbar = ({darkMode, toggleDarkMode}: {darkMode: 'light' | 'dark', toggleD
                         aria-controls={open ? 'account-menu' : undefined}
                         aria-haspopup="true"
                         aria-expanded={open ? 'true' : undefined}>
-                            <Avatar sx={{ width: 32, height: 32}}>{user.username[0].toUpperCase()}</Avatar>
+                            <Avatar sx={{ width: 32, height: 32}} src={user.profile} />
                         </IconButton>
                     </Tooltip>
                     <Menu
