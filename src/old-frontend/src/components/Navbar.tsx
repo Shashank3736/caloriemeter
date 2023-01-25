@@ -55,6 +55,7 @@ const Navbar = ({darkMode, toggleDarkMode}: {darkMode: 'light' | 'dark', toggleD
         const token = localStorage.getItem('token')
         const id = localStorage.getItem('id')
         if (!token || !id || !user) return
+        console.log(updateUser)
         update_user({ ...updateUser, token, id })
         .then((res: User) => {
             setUpdateUser({ ...updateUser,...res});
@@ -66,7 +67,12 @@ const Navbar = ({darkMode, toggleDarkMode}: {darkMode: 'light' | 'dark', toggleD
       }
       
       const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setUpdateUser({ ...updateUser, [event.target.id]: event.target.value })
+        if(event.target.type === 'file') {
+            setUpdateUser({ ...updateUser, [event.target.id]: event.target.files[0] })
+        }
+        else {
+            setUpdateUser({ ...updateUser, [event.target.id]: event.target.value })
+        }
       }
     useEffect(() => {
         const token = localStorage.getItem('token')
@@ -100,7 +106,7 @@ const Navbar = ({darkMode, toggleDarkMode}: {darkMode: 'light' | 'dark', toggleD
                         aria-controls={open ? 'account-menu' : undefined}
                         aria-haspopup="true"
                         aria-expanded={open ? 'true' : undefined}>
-                            <Avatar sx={{ width: 32, height: 32}} src={user.profile} alt={user.username} />
+                            <Avatar sx={{ width: 50, height: 50}} src={user.profile} alt={user.username} />
                         </IconButton>
                     </Tooltip>
                     <Menu
@@ -193,7 +199,7 @@ const Navbar = ({darkMode, toggleDarkMode}: {darkMode: 'light' | 'dark', toggleD
                             <TextField value={updateUser.username} variant='filled' label='Username' id='username' />
                             <TextField value={updateUser.email} variant='filled' label='Email' id='email' />
                             <TextField value={updateUser.max_calories} variant='filled' label='Max. Calories' id='max_calories' />
-                            <TextField variant='filled' label='Password' id='password' type='password' />
+                            <TextField variant='filled' label='New Password' id='password' type='password' />
                             <Input type='file' id='profile' />
                             <div className='flex flex-row justify-between'>
                                 <Button variant='contained' color='success' onClick={() => {

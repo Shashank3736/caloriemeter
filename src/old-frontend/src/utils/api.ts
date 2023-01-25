@@ -137,6 +137,7 @@ export async function update_user({ token, id, username, password, email, max_ca
       const response = await axios.patch(`${BASE_URL}/users/${id}/`, formData, {
           headers: {
               Authorization: `Token ${token}`,
+              'Content-Type': 'multipart/form-data'
           },
           transformResponse: [data => data]
       })
