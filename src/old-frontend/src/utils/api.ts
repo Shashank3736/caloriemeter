@@ -126,14 +126,15 @@ export async function create_user({ username, password, email }: { username: str
   }
 }
 
-export async function update_user({ token, id, username, password, email, max_calories }: { token: string, id: string, username: string, password: string, email: string, max_calories: number }) {
+export async function update_user({ token, id, username, password, email, max_calories, profile }: { token: string, id: string, username: string, password: string, email: string, max_calories: number, profile: File }) {
   try {
-      const response = await axios.patch(`${BASE_URL}/users/${id}/`, {
-          username,
-          password,
-          email,
-          max_calories
-      }, {
+    const formData = new FormData();
+    if(username) formData.append('username', username);
+    if(password) formData.append('password', password);
+    if(email) formData.append('email', email);
+    if(max_calories) formData.append('max_calories', max_calories);
+    if(profile) formData.append('profile', profile);
+      const response = await axios.patch(`${BASE_URL}/users/${id}/`, formData, {
           headers: {
               Authorization: `Token ${token}`,
           },
