@@ -1,11 +1,9 @@
 import MainLayout from '@/layout/MainLayout'
 import { Food, User, create_food, delete_food, get_today_foods, get_user } from '@/utils/api'
 import { AddCircle , Delete } from '@mui/icons-material'
-import { Container, Divider, FormControl, FormGroup, IconButton, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, Snackbar, Table, TableBody, TableCell, TableHead, TableRow, TextField, Tooltip, Typography, styled, tableCellClasses } from '@mui/material'
+import { CircularProgress, CircularProgressProps, Container, Divider, FormControl, FormGroup, IconButton, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, Snackbar, Table, TableBody, TableCell, TableHead, TableRow, TextField, Tooltip, Typography, circularProgressClasses, styled, tableCellClasses } from '@mui/material'
 import { Box } from '@mui/system'
 import React from 'react'
-import { CircularProgressbarWithChildren, buildStyles } from 'react-circular-progressbar'
-import 'react-circular-progressbar/dist/styles.css';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
@@ -40,6 +38,52 @@ type Props = {
     darkMode: 'light' | 'dark'
     toggleDarkMode: () => void
 }
+
+function CircularProgressWithLabel(
+    props: CircularProgressProps & { value: number },
+  ) {
+    return (
+      <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+        <CircularProgress {...props} 
+        variant='determinate' 
+        value={100} 
+        sx={{
+            color: (theme) =>
+              theme.palette.grey[theme.palette.mode === 'light' ? 200 : 800],
+          }}/>
+        <CircularProgress {...props}
+        variant='determinate'
+        value={props.value > 100 ? 100 : props.value}
+        sx={{
+            color: (theme) => (props.value <= 100 ? (theme.palette.mode === 'light' ? '#1a90ff' : '#308fe8'): (theme.palette.mode === 'light' ? '#ff1744' : '#d50000')),
+            position: 'absolute',
+            left: 0,
+            [`& .${circularProgressClasses.circle}`]: {
+              strokeLinecap: 'round',
+            },
+          }}/>
+        <Box
+          sx={{
+            top: 0,
+            left: 0,
+            bottom: 0,
+            right: 0,
+            position: 'absolute',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Typography
+            variant="caption"
+            component="div"
+            color="text.secondary"
+          >{`${Math.round(props.value)}%`}
+          </Typography>
+        </Box>
+      </Box>
+    );
+  }
 
 const Today = ({ darkMode, toggleDarkMode }: Props) => {
     const [state, setState] = React.useState({
@@ -141,12 +185,7 @@ const Today = ({ darkMode, toggleDarkMode }: Props) => {
             <Typography variant='h4' className='text-center font-bold'>Today</Typography>
             <Box className='flex justify-center items-center overflow-auto mt-3'>
                 <Typography variant='h6' className='font-bold mr-4'>Total Calories: <span className={state.max_calories >= state.calories ? 'text-blue-500': 'text-red-500'}>{state.calories.toFixed(2)}</span>/<strong>{state.max_calories}</strong></Typography>
-                <CircularProgressbarWithChildren className='h-32 w-32' styles={buildStyles({
-                    pathColor: state.max_calories >= state.calories ? '#3b82f6' : '#ef4444',
-                    textColor: state.max_calories >= state.calories ? '#3b82f6' : '#ef4444',
-                })} value={state.calories*100/state.max_calories}>
-                    {state.max_calories >= state.calories ? <Typography variant='h6' className='font-bold text-blue-500'>{(state.calories*100/state.max_calories).toFixed(2)}%</Typography> : <Typography variant='h6' className='font-bold text-red-500'>Over</Typography>}
-                </CircularProgressbarWithChildren>
+                <CircularProgressWithLabel value={state.calories*100/state.max_calories} size={60} />
             </Box>
             <Divider className='my-5' />
             <FormGroup className='flex md:flex-row mx-auto items-center justify-center'>
