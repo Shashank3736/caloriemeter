@@ -85,7 +85,7 @@ const Navbar = ({darkMode, toggleDarkMode}: {darkMode: 'light' | 'dark', toggleD
     }, [])
     return (
         <header>
-            <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
+            <div className="container mx-auto flex flex-wrap py-2 flex-col md:flex-row items-center">
                 <a className="flex items-center dark:text-white text-gray-900 mb-4 md:mb-0">
                     <Image src="/favicon.ico" alt="Logo" width={32} height={32} />
                     <span className="ml-3 font-semibold text-2xl">{name}</span>
