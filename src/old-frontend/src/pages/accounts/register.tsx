@@ -16,11 +16,11 @@ export default function RegisterPage() {
     is_authenticated: false,
     error: null
   })
-  const handleChange: React.FormEventHandler<HTMLInputElement> = (event) => {
+  const handleChange: React.FormEventHandler<HTMLDivElement> = (event) => {
     if (event) {
       setState({
         ...state,
-        [event.target.id]: event.target.value
+        [(event.target as HTMLInputElement).id]: (event.target as HTMLInputElement).value
       })
     }
   }
@@ -59,7 +59,7 @@ export default function RegisterPage() {
     <AccountsLayout>
         <Paper className='absolute left-1/2 top-1/2 translate-x-[-50%] translate-y-[-50%] min-w-[350px] min-h-[350px] w-1/2 p-5 md:rounded'>
             <Typography variant='h5' fontWeight={400} className='text-center'>Welcome Buddy!</Typography>
-            <Box component='form' method='post' className='flex flex-col w-full p-4' gap={3} onChange={handleChange} onSubmit={handleSubmit}>
+            <Box component='form' className='flex flex-col w-full p-4' gap={3} onChange={handleChange} onSubmit={handleSubmit}>
                 <TextField required id='username' label='Username' variant='standard' className='w-full' autoComplete='off' />
                 <TextField required id='email' label='Email' variant='standard' className='w-full' autoComplete='off' />
                 <Box className='flex flex-col md:flex-row' columnGap={1} rowGap={3}>

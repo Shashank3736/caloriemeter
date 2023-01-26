@@ -85,8 +85,17 @@ function CircularProgressWithLabel(
     );
   }
 
+interface State {
+    foodType: 'breakfast' | 'lunch' | 'snacks' | 'dinner' | ''
+    food: string
+    foods: Food[]
+    max_calories: number
+    calories: number
+    error: any
+}
+
 const Today = ({ darkMode, toggleDarkMode }: Props) => {
-    const [state, setState] = React.useState({
+    const [state, setState] = React.useState<State>({
         foodType: '',
         food: '',
         foods: [],
@@ -98,15 +107,19 @@ const Today = ({ darkMode, toggleDarkMode }: Props) => {
     const CATEG = ['breakfast', 'lunch', 'snacks', 'dinner']
 
     const handleTypeChange = (event: SelectChangeEvent) => {
-        setState({
-            ...state,
-            foodType: event.target.value,
-        });
+        if(event.target.value === 'breakfast') setState({...state, foodType: 'breakfast'})
+        else if(event.target.value === 'lunch') setState({...state, foodType: 'lunch'})
+        else if(event.target.value === 'snacks') setState({...state, foodType: 'snacks'})
+        else if(event.target.value === 'dinner') setState({...state, foodType: 'dinner'})
     };
 
     function addFood() {
         const token = localStorage.getItem('token')
         if (!token) return window.location.replace('/accounts/login')
+        if (!state.foodType || !state.food) return setState({
+            ...state,
+            error: 'Please fill all fields'
+        })
         create_food({ token, name: state.food, category: state.foodType, date: new Date().toISOString().slice(0, 10) }).then((res) => {
             setState({
                 ...state,
