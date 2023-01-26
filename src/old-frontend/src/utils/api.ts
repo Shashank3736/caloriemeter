@@ -9,7 +9,7 @@ export type User = {
     username: string;
     email: string | null;
     max_calories: number | null;
-    profile: Url | null;
+    profile: string | null;
 };
 
 export type Food = {
@@ -126,7 +126,7 @@ export async function create_user({ username, password, email }: { username: str
   }
 }
 
-export async function update_user({ token, id, username, password, email, max_calories, profile }: { token: string, id: string, username: string, password: string, email: string, max_calories: number, profile: File }) {
+export async function update_user({ token, id, username, password, email, max_calories, profile }: { token: string, id: string, username?: string | null, password?: string | null, email?: string | null, max_calories?: number | null, profile?: File | null }) {
   try {
     const formData = new FormData();
     if(username) formData.append('username', username);

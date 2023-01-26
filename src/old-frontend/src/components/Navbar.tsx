@@ -7,6 +7,7 @@ import IconButton from '@mui/material/IconButton'
 import { Close, Home, Login, Logout, Settings, Today } from '@mui/icons-material'
 import { User, get_user, update_user } from '@/utils/api'
 import { Avatar, Box, Card, Divider, FormControlLabel, FormGroup, Input, ListItemIcon, Menu, MenuItem, Modal, Switch, TextField, Typography } from '@mui/material'
+import { Url } from 'url'
 
 const name = 'Shreyash Raj'
 const links = [
@@ -17,9 +18,17 @@ const links = [
     }
 ]
 
+interface UpdateUser {
+    username: string;
+    email: string | null;
+    max_calories: number | null;
+    profile: File | null
+    password: string | null
+}
+
 const Navbar = ({darkMode, toggleDarkMode}: {darkMode: 'light' | 'dark', toggleDarkMode: () => void}) => {
-    const [user, setUser] = useState(null)
-    const [updateUser, setUpdateUser] = useState({
+    const [user, setUser] = useState<User | null>(null)
+    const [updateUser, setUpdateUser] = useState<UpdateUser>({
         username: '',
         email: '',
         password: '',
@@ -57,7 +66,8 @@ const Navbar = ({darkMode, toggleDarkMode}: {darkMode: 'light' | 'dark', toggleD
         if (!token || !id || !user) return
         console.log(updateUser)
         update_user({ ...updateUser, token, id })
-        .then((res: User) => {
+        .then((res) => {
+            updateUser.profile = null
             setUpdateUser({ ...updateUser,...res});
             setUser(res);
             setEdited(true)
@@ -67,7 +77,7 @@ const Navbar = ({darkMode, toggleDarkMode}: {darkMode: 'light' | 'dark', toggleD
       }
       
       const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if(event.target.type === 'file') {
+        if(event.target.type === 'file' && event.target.files) {
             setUpdateUser({ ...updateUser, [event.target.id]: event.target.files[0] })
         }
         else {
@@ -78,9 +88,9 @@ const Navbar = ({darkMode, toggleDarkMode}: {darkMode: 'light' | 'dark', toggleD
         const token = localStorage.getItem('token')
         const id = localStorage.getItem('id')
         if (!token || !id) return
-        get_user({ token, id }).then((user) => {
-            setUser(user);
-            setUpdateUser({ ...updateUser,...user});
+        get_user({ token, id }).then((res) => {
+            setUser(res);
+            setUpdateUser({ ...updateUser,...res, profile: null});
         })
     }, [])
     return (
@@ -106,7 +116,7 @@ const Navbar = ({darkMode, toggleDarkMode}: {darkMode: 'light' | 'dark', toggleD
                         aria-controls={open ? 'account-menu' : undefined}
                         aria-haspopup="true"
                         aria-expanded={open ? 'true' : undefined}>
-                            <Avatar sx={{ width: 50, height: 50}} src={user.profile} alt={user.username} />
+                            <Avatar sx={{ width: 50, height: 50}} src={user.profile ? user.profile : undefined} alt={user.username} />
                         </IconButton>
                     </Tooltip>
                     <Menu
@@ -192,7 +202,7 @@ const Navbar = ({darkMode, toggleDarkMode}: {darkMode: 'light' | 'dark', toggleD
                     <IconButton size='small' onClick={handleModalClose} className='absolute top-0 right-0'>
                         <Close />
                     </IconButton>
-                    <Avatar alt={user.username} src={user.profile} className='w-28 h-28 rounded-full hover:rounded-xl my-auto mx-auto' variant='square' />
+                    <Avatar alt={user.username} src={user.profile ? user.profile : undefined} className='w-28 h-28 rounded-full hover:rounded-xl my-auto mx-auto' variant='square' />
                     <Divider className='m-4' orientation='vertical' flexItem />
                     {edit ? <>
                         <FormGroup className='space-y-4 md:min-w-[500px] max-w-[700px]' onChange={handleChange}>
