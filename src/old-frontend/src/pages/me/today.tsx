@@ -1,117 +1,39 @@
 import MainLayout from '@/layout/MainLayout'
 import { Food, User, create_food, delete_food, get_foods_by_date, get_user } from '@/utils/api'
 import { AddCircle , Delete } from '@mui/icons-material'
-import { CircularProgress, CircularProgressProps, Container, Divider, FormControl, FormGroup, IconButton, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, Snackbar, Table, TableBody, TableCell, TableHead, TableRow, TextField, Tooltip, Typography, circularProgressClasses, styled, tableCellClasses } from '@mui/material'
+import { Container, Divider, FormControl, FormGroup, IconButton, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, Snackbar, Table, TableBody, TableHead, TableRow, TextField, Tooltip, Typography } from '@mui/material'
 import { Box } from '@mui/system'
-import React from 'react'
-import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import React, {useState, useEffect} from 'react'
 import moment from 'moment'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import Alert from '@/components/Alert'
+import CircularProgressWithLabel from '@/components/Progress'
+import { StyledTableCell, StyledTableRow } from '@/components/Table'
 
-const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
-  props,
-  ref,
-) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
-
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-    [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white,
-    },
-    [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
-    },
-}));
-  
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-    '&:nth-of-type(odd)': {
-    backgroundColor: theme.palette.action.hover,
-    },
-    // hide last border
-    '&:last-child td, &:last-child th': {
-    border: 0,
-    },
-}));
-
+interface State {
+    foodType: 'breakfast' | 'lunch' | 'snacks' | 'dinner' | ''
+    food: string
+}
 
 type Props = {
     darkMode: 'light' | 'dark'
     toggleDarkMode: () => void
 }
 
-function CircularProgressWithLabel(
-    props: CircularProgressProps & { value: number },
-  ) {
-    return (
-      <Box sx={{ position: 'relative', display: 'inline-flex' }}>
-        <CircularProgress {...props} 
-        variant='determinate' 
-        value={100} 
-        sx={{
-            color: (theme) =>
-              theme.palette.grey[theme.palette.mode === 'light' ? 200 : 800],
-          }}/>
-        <CircularProgress {...props}
-        variant='determinate'
-        value={props.value > 100 ? 100 : props.value}
-        sx={{
-            color: (theme) => (props.value <= 100 ? (theme.palette.mode === 'light' ? '#1a90ff' : '#308fe8'): (theme.palette.mode === 'light' ? '#ff1744' : '#d50000')),
-            position: 'absolute',
-            left: 0,
-            [`& .${circularProgressClasses.circle}`]: {
-              strokeLinecap: 'round',
-            },
-          }}/>
-        <Box
-          sx={{
-            top: 0,
-            left: 0,
-            bottom: 0,
-            right: 0,
-            position: 'absolute',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Typography
-            variant="caption"
-            component="div"
-            color="text.secondary"
-          >{`${Math.round(props.value)}%`}
-          </Typography>
-        </Box>
-      </Box>
-    );
-  }
-
-interface State {
-    foodType: 'breakfast' | 'lunch' | 'snacks' | 'dinner' | ''
-    food: string
-    foods: Food[]
-    max_calories: number
-    calories: number
-    error: any
-}
-
 const Today = ({ darkMode, toggleDarkMode }: Props) => {
-    const [state, setState] = React.useState<State>({
+    const [state, setState] = useState<State>({
         foodType: '',
         food: '',
-        foods: [],
-        max_calories: 2000,
-        calories: 0,
-        error: null
     });
-
-    const [date, setDate] = React.useState(new Date());
-
-    const [api, setApi] = React.useState(true);
+    const [date, setDate] = useState(new Date());
+    const [api, setApi] = useState(true);
+    const [error, setError] = useState<any>(null);
+    const [calories, setCalories] = useState(0);
+    const [maxCalories, setMaxCalories] = useState(2000);
+    const [foods, setFoods] = useState<Food[]>([]);
 
     const CATEG = ['breakfast', 'lunch', 'snacks', 'dinner']
 
@@ -125,25 +47,17 @@ const Today = ({ darkMode, toggleDarkMode }: Props) => {
     function addFood() {
         const token = localStorage.getItem('token')
         if (!token) return window.location.replace('/accounts/login')
-        if (!state.foodType || !state.food) return setState({
-            ...state,
-            error: 'Please fill all fields'
-        })
+        if (!state.foodType || !state.food) return setError('Please fill all the fields!')
         create_food({ token, name: state.food, category: state.foodType, date: date.toISOString().slice(0, 10) }).then((res) => {
-            setState({
-                ...state,
-                foods: [...state.foods, res],
-                food: '',
-                foodType: '',
-                calories: state.calories + res.calorie
-            })
+            setFoods([...foods, res])
+            setCalories(calories + res.calorie)
         }).catch((err) => {
             console.log(err)
+            setError(err)
+        }).finally(() => {
             setState({
-                ...state,
                 food: '',
                 foodType: '',
-                error: err
             })
         })
     }
@@ -152,55 +66,44 @@ const Today = ({ darkMode, toggleDarkMode }: Props) => {
         if (reason === 'clickaway') {
             return;
         }
-        setState({
-            ...state,
-            error: null
-        })
+        setError(null);
     }
 
     function deleteFood(id: string, calorie: number) {
         const token = localStorage.getItem('token')
         if (!token) return window.location.replace('/accounts/login')
         delete_food({ token, id }).then((res) => {
-            const foods = state.foods.filter((food: Food) => food.id !== id)
-            setState({
-                ...state,
-                foods,
-                calories: state.calories - calorie
-            })
+            const newFoods = foods.filter((food: Food) => food.id !== id)
+            setFoods(newFoods)
+            setCalories(calories - calorie)
         }).catch((err) => {
             console.log(err)
-            setState({
-                ...state,
-                error: err
-            })
+            setError(err ? err : 'Failed to connect with the api!')
         })
     }
 
-    React.useEffect(() => {
+    useEffect(() => {
         const token = localStorage.getItem('token')
         const id = localStorage.getItem('id')
         if (!token || !id) return window.location.replace('/accounts/login')
+        // get foods
         get_foods_by_date({ token, date: date.toISOString().slice(0, 10) }).then((res) => {
             let calories = 0
             res.forEach((food: Food) => {
                 calories += food.calorie
             })
-            get_user({ token, id }).then((user: User) => {
-                setState({
-                    ...state,
-                    max_calories: user.max_calories || 2000,
-                    foods: res,
-                    calories
-                })
-            }).catch((err) => {
-                setState({ ...state, error: err || 'Failed to connect with the api!'})
-                console.log(err)
-                if(!err) setApi(false)
-                
-            })
+            setFoods(res)
+            setCalories(calories)
         }).catch((err) => {
-            setState({ ...state, error: err || 'Failed to connect with the api!'})
+            setError(err || 'Failed to connect with the api!')
+            console.log(err)
+            if(!err) setApi(false)
+        })
+        // get max calories
+        get_user({ token, id }).then((user: User) => {
+            setMaxCalories(user.max_calories || 2000)
+        }).catch((err) => {
+            setError(err || 'Failed to connect with the api!')
             console.log(err)
             if(!err) setApi(false)
         })
@@ -245,9 +148,10 @@ const Today = ({ darkMode, toggleDarkMode }: Props) => {
                 </LocalizationProvider>
             </Box>
             <Box className='flex justify-center items-center overflow-auto mt-3'>
-                <Typography variant='h6' className='font-bold mr-4'>Total Calories: <span className={state.max_calories >= state.calories ? 'text-blue-500': 'text-red-500'}>{state.calories.toFixed(2)}</span>/<strong>{state.max_calories}</strong></Typography>
-                <CircularProgressWithLabel value={state.calories*100/state.max_calories} size={60} />
+                <Typography variant='h6' className='font-bold mr-4'>Total Calories: <span className={maxCalories >= calories ? 'text-blue-500': 'text-red-500'}>{calories.toFixed(2)}</span>/<strong>{maxCalories}</strong></Typography>
+                <CircularProgressWithLabel value={calories*100/maxCalories} size={60} />
             </Box>
+            {/* Divider */}
             <Divider className='my-5' />
             <FormGroup className='flex md:flex-row mx-auto items-center justify-center'>
                 <FormControl className='w-[15vw] min-w-[150px]'>
@@ -287,7 +191,7 @@ const Today = ({ darkMode, toggleDarkMode }: Props) => {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {state.foods.filter((food: Food) => (food.category === categ)).map((food: Food) => {
+                                        {foods.filter((food: Food) => (food.category === categ)).map((food: Food) => {
                                             return (
                                                 <StyledTableRow key={food.id}>
                                                     <StyledTableCell component="th" scope="row">
@@ -306,16 +210,16 @@ const Today = ({ darkMode, toggleDarkMode }: Props) => {
                                         })}
                                     </TableBody>
                                 </Table>
-                                {state.foods.filter((food: Food) => food.category === categ).length === 0 && <Typography variant='caption' className='flex justify-center py-3 text-gray-400'>No food added</Typography>}
+                                {foods.filter((food: Food) => food.category === categ).length === 0 && <Typography variant='caption' className='flex justify-center py-3 text-gray-400'>No food added</Typography>}
                             </Paper>
                         </Box>
                     )
                 })}
             </Box>
         </Container>
-        <Snackbar open={Boolean(state.error)} autoHideDuration={6000} onClose={handleErrorClose}>
+        <Snackbar open={Boolean(error)} autoHideDuration={6000} onClose={handleErrorClose}>
             <Alert onClose={handleErrorClose} severity='error'>
-                {state.error}
+                {error}
             </Alert>
         </Snackbar>
     </MainLayout>
