@@ -50,10 +50,10 @@ export default function RegisterPage() {
     })
   }
 
-  if (state.is_authenticated) window.location.replace('/')
+  if (state.is_authenticated) window.location.replace('/accounts/login')
   useEffect(() => {
     if (state.is_authenticated) window.location.replace('/')
-    if (localStorage.getItem('token') && localStorage.getItem('id')) window.location.replace('/')
+    if (localStorage.getItem('token') && localStorage.getItem('id')) window.location.replace('/me/today')
   }, [state.is_authenticated])
   return (
     <AccountsLayout>

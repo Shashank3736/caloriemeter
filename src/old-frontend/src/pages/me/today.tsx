@@ -104,6 +104,8 @@ const Today = ({ darkMode, toggleDarkMode }: Props) => {
         error: null
     });
 
+    const [api, setApi] = React.useState(true);
+
     const CATEG = ['breakfast', 'lunch', 'snacks', 'dinner']
 
     const handleTypeChange = (event: SelectChangeEvent) => {
@@ -185,16 +187,22 @@ const Today = ({ darkMode, toggleDarkMode }: Props) => {
                     calories
                 })
             }).catch((err) => {
+                setState({ ...state, error: err || 'Failed to connect with the api!'})
                 console.log(err)
+                if(!err) setApi(false)
+                
             })
         }).catch((err) => {
+            setState({ ...state, error: err || 'Failed to connect with the api!'})
             console.log(err)
+            if(!err) setApi(false)
         })
-        console.log(state)
     },[])
-  return (
+    return (
     <MainLayout darkMode={darkMode} toggleDarkMode={toggleDarkMode}>
         <Container className='w-[100vw] relative'>
+            {!api &&
+            <Typography variant='h3' className='text-center text-red-500 font-bold'>Failed to connect with the api!</Typography>}
             <Typography variant='h4' className='text-center font-bold'>Today</Typography>
             <Box className='flex justify-center items-center overflow-auto mt-3'>
                 <Typography variant='h6' className='font-bold mr-4'>Total Calories: <span className={state.max_calories >= state.calories ? 'text-blue-500': 'text-red-500'}>{state.calories.toFixed(2)}</span>/<strong>{state.max_calories}</strong></Typography>

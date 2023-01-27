@@ -47,11 +47,11 @@ export default function LoginPage() {
     }
 
     useEffect(() => {
-        if(state.is_authenticated) window.location.replace('/')
-        if(localStorage.getItem('token') && localStorage.getItem('id')) window.location.replace('/')
+        if(state.is_authenticated) window.location.replace('/me/today')
+        if(localStorage.getItem('token') && localStorage.getItem('id')) window.location.replace('/me/today')
     }, [state.is_authenticated])
 
-    if(state.is_authenticated) window.location.replace('/')
+    if(state.is_authenticated) window.location.replace('/me/today')
     
     return (
         <AccountsLayout>

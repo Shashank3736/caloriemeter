@@ -13,13 +13,13 @@ export default function Home({ darkMode, toggleDarkMode }: Props) {
   const [activeStep, setActiveStep] = useState(0)
   const steps = [{
     label: 'Create an account',
-    description: 'Create an account to get started',
+    description: 'Start with creating an account to get started. We just need username, email and password to get started.',
   }, {
     label: 'Add your food',
-    description: 'Add your food to get started',
+    description: 'Go to the food section and add your food to get started. You can add your food by searching in the search box in 4 diff. timelines.',
   }, {
     label: 'Track your progress',
-    description: 'Track your progress to get started',
+    description: 'Track your progress with our great and simple UI. You can track your progress in the same today page. Just click on your profile picture and you will see todat option.',
   }]
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -106,6 +106,7 @@ export default function Home({ darkMode, toggleDarkMode }: Props) {
               )}  
               </div>
             </div>
+            <Button href='/me/today' variant='contained' className='mt-4 py-3 px-6 rounded-xl'>Get Started</Button>
           </section>
         </Container>
       </MainLayout>

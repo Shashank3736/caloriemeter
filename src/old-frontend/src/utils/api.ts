@@ -43,7 +43,7 @@ export async function get_users({ token }: { token: string }) {
       });
       return response.data;
   } catch (error: any) {
-      throw error.response.data
+      throw error.response?.data
   }
 }
 
@@ -59,7 +59,7 @@ export async function get_token({ username, password }: { username: string, pass
       response.data.user_id = response.data.user_id.toString()
       return response.data
   } catch (error: any) {
-      throw (error.response.data)
+      throw (error.response?.data)
   }
 }
 
@@ -75,7 +75,7 @@ export async function get_user({ token, id }: { token: string, id: string }) {
       response.data.id = response.data.id.toString()
       return response.data
   } catch (error: any) {
-      throw (error.response.data)
+      throw (error.response?.data)
   }
 }
 
@@ -94,7 +94,7 @@ export async function get_foods({ token }: { token: string }) {
       })
       return response.data
   } catch (error: any) {
-      throw (error.response.data)
+      throw (error.response?.data)
   }
 }
 
@@ -113,7 +113,7 @@ export async function get_today_foods({ token }: { token: string }) {
       })
       return response.data
   } catch (error: any) {
-      throw (error.response.data)
+      throw (error.response?.data)
   }
 }
 
@@ -130,7 +130,7 @@ export async function create_user({ username, password, email }: { username: str
       response.data.id = response.data.id.toString()
       return response.data
   } catch (error: any) {
-      throw (error.response.data)
+      throw (error.response?.data)
   }
 }
 
@@ -153,7 +153,7 @@ export async function update_user({ token, id, username, password, email, max_ca
       response.data.id = response.data.id.toString()
       return response.data
   } catch (error: any) {
-      throw (error.response.data)
+      throw (error.response?.data)
   }
 }
 
@@ -174,7 +174,7 @@ export async function create_food({ token, name, date, category }: { token: stri
       response.data.user = response.data.user.toString()
       return response.data
   } catch (error: any) {
-      throw (error.response.data)
+      throw (error.response?.data)
   }
 }
 
@@ -187,6 +187,6 @@ export async function delete_food({ token, id }: { token: string, id: string }) 
       });
       return response.data;
   } catch (error: any) {
-      throw (error.response.data)
+      throw (error.response?.data)
   }
 }

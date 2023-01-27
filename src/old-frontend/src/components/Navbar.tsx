@@ -7,7 +7,6 @@ import IconButton from '@mui/material/IconButton'
 import { Close, Home, Login, Logout, Settings, Today } from '@mui/icons-material'
 import { User, get_user, update_user } from '@/utils/api'
 import { Avatar, Box, Card, Divider, FormControlLabel, FormGroup, Input, ListItemIcon, Menu, MenuItem, Modal, Switch, TextField, Typography } from '@mui/material'
-import { Url } from 'url'
 
 const name = 'Shreyash Raj'
 const links = [
@@ -15,6 +14,10 @@ const links = [
         name: 'Home',
         href: '/',
         icon: <Home />
+    }, {
+        name: 'Today',
+        href: '/me/today',
+        icon: <Today />
     }
 ]
 
@@ -92,104 +95,105 @@ const Navbar = ({darkMode, toggleDarkMode}: {darkMode: 'light' | 'dark', toggleD
             setUser(res);
             setUpdateUser({ ...updateUser,...res, profile: null});
         })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     return (
         <header>
-            <div className="container mx-auto flex flex-wrap py-2 flex-col md:flex-row items-center">
-                <a className="flex items-center dark:text-white text-gray-900 mb-4 md:mb-0">
+            <div className="container px-4 mx-auto flex justify-between items-center">
+                <a className="flex items-center text-black dark:text-white mb-4 md:mb-0 no-underline" href='/'>
                     <Image src="/favicon.ico" alt="Logo" width={32} height={32} />
                     <span className="ml-3 font-semibold text-2xl">{name}</span>
                 </a>
-                <nav className="md:ml-auto flex flex-wrap items-center text-base justify-center">
+                <nav className="hidden md:flex items-center text-base justify-center space-x-4">
                     {links.map((link) => {
                         return (
                             <Button color='inherit' href={link.href} key={link.name} startIcon={link.icon}>{link.name}</Button>
                         )
                     })}
-                    {(user === null) ? <Button className='ml-5' variant='contained' href='/accounts/login' startIcon={<Login />}>Login</Button>:
-                    <>
-                    <Tooltip title='Profile'>
-                        <IconButton 
-                        onClick={handleClick}
-                        size='small'
-                        className='ml-5'
-                        aria-controls={open ? 'account-menu' : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={open ? 'true' : undefined}>
-                            <Avatar sx={{ width: 50, height: 50}} src={user.profile ? user.profile : undefined} alt={user.username} />
-                        </IconButton>
-                    </Tooltip>
-                    <Menu
-                        anchorEl={anchorEl}
-                        id="account-menu"
-                        open={open}
-                        onClose={handleClose}
-                        onClick={handleClose}
-                        PaperProps={{
-                        elevation: 0,
-                        sx: {
-                            overflow: 'visible',
-                            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-                            mt: 1.5,
-                            '& .MuiAvatar-root': {
-                            width: 32,
-                            height: 32,
-                            ml: -0.5,
-                            mr: 1,
-                            },
-                            '&:before': {
-                            content: '""',
-                            display: 'block',
-                            position: 'absolute',
-                            top: 0,
-                            right: 14,
-                            width: 10,
-                            height: 10,
-                            bgcolor: 'background.paper',
-                            transform: 'translateY(-50%) rotate(45deg)',
-                            zIndex: 0,
-                            },
-                        },
-                        }}
-                        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                    >
-                        <MenuItem className='flex items-center justify-center'>
-                            User: {user.username}
-                        </MenuItem>
-                        <MenuItem onClick={(e) => {
-                            toggleDarkMode();
-                            e.stopPropagation();
-                        }}>
-                            <FormControlLabel
-                            value='darkMode'
-                            control={<Switch checked={darkMode === 'dark'} onChange={toggleDarkMode} />}
-                            label='Dark Mode'
-                            labelPlacement='start'
-                            />
-                        </MenuItem>
-                        <Divider />
-                        <MenuItem onClick={() => window.location.replace('/me/today/')}>
-                            <ListItemIcon>
-                                <Today fontSize="small" />
-                            </ListItemIcon>
-                            Today
-                        </MenuItem>
-                        <MenuItem onClick={() => setOpenModal(true)}>
-                            <ListItemIcon>
-                                <Settings fontSize="small" />
-                            </ListItemIcon>
-                            Settings
-                        </MenuItem>
-                        <MenuItem onClick={logout}>
-                            <ListItemIcon>
-                                <Logout fontSize="small" />
-                            </ListItemIcon>
-                            Logout
-                        </MenuItem>
-                    </Menu>
-                    </>}
                 </nav>
+                {(user === null) ? <Button className='ml-5 my-4' variant='contained' href='/accounts/login' startIcon={<Login />}>Login</Button>:
+                <div>
+                <Tooltip title='Profile'>
+                    <IconButton 
+                    onClick={handleClick}
+                    size='medium'
+                    className='ml-5'
+                    aria-controls={open ? 'account-menu' : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={open ? 'true' : undefined}>
+                        <Avatar sx={{ width: 50, height: 50}} src={user.profile ? user.profile : undefined} alt={user.username} />
+                    </IconButton>
+                </Tooltip>
+                <Menu
+                    anchorEl={anchorEl}
+                    id="account-menu"
+                    open={open}
+                    onClose={handleClose}
+                    onClick={handleClose}
+                    PaperProps={{
+                    elevation: 0,
+                    sx: {
+                        overflow: 'visible',
+                        filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                        mt: 1.5,
+                        '& .MuiAvatar-root': {
+                        width: 32,
+                        height: 32,
+                        ml: -0.5,
+                        mr: 1,
+                        },
+                        '&:before': {
+                        content: '""',
+                        display: 'block',
+                        position: 'absolute',
+                        top: 0,
+                        right: 14,
+                        width: 10,
+                        height: 10,
+                        bgcolor: 'background.paper',
+                        transform: 'translateY(-50%) rotate(45deg)',
+                        zIndex: 0,
+                        },
+                    },
+                    }}
+                    transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                    anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                >
+                    <MenuItem className='flex items-center justify-center'>
+                        User: {user.username}
+                    </MenuItem>
+                    <MenuItem onClick={(e) => {
+                        toggleDarkMode();
+                        e.stopPropagation();
+                    }}>
+                        <FormControlLabel
+                        value='darkMode'
+                        control={<Switch checked={darkMode === 'dark'} onChange={toggleDarkMode} />}
+                        label='Dark Mode'
+                        labelPlacement='start'
+                        />
+                    </MenuItem>
+                    <Divider />
+                    <MenuItem onClick={() => window.location.replace('/me/today/')}>
+                        <ListItemIcon>
+                            <Today fontSize="small" />
+                        </ListItemIcon>
+                        Today
+                    </MenuItem>
+                    <MenuItem onClick={() => setOpenModal(true)}>
+                        <ListItemIcon>
+                            <Settings fontSize="small" />
+                        </ListItemIcon>
+                        Settings
+                    </MenuItem>
+                    <MenuItem onClick={logout}>
+                        <ListItemIcon>
+                            <Logout fontSize="small" />
+                        </ListItemIcon>
+                        Logout
+                    </MenuItem>
+                </Menu>
+                </div>}
             </div>
             {user && <Modal
             open={openModal}
