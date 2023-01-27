@@ -22,3 +22,17 @@ class UserFoodItemViewSet(viewsets.ModelViewSet):
         queryset = UserFoodItem.objects.filter(user=request.user, date=timezone.now())
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'])
+    def by_date(self, request):
+        date = request.query_params.get('date', None)
+        if date is None:
+            date = timezone.now()
+        else:
+            try:
+                date = timezone.datetime.fromisoformat(date).date()
+            except ValueError:
+                return Response({'error': 'Invalid date format'}, status=400)
+        queryset = UserFoodItem.objects.filter(user=request.user, date=date)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)

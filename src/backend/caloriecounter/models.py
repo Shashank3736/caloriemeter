@@ -22,3 +22,6 @@ class UserFoodItem(models.Model):
         if not self.id:
             self.id = random.randint(10**17, 10**18-1)
         super().save(*args, **kwargs)
+
+    class Meta:
+        ordering = ['-date']
