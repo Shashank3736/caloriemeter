@@ -98,6 +98,27 @@ export async function get_foods({ token }: { token: string }) {
   }
 }
 
+export async function get_foods_by_date({ token, date }: { token: string, date: string }) {
+  try {
+      const response = await axios.get(`${BASE_URL}/foods/by_date/?date=${date}`, {
+          headers: {
+              Authorization: `Token ${token}`,
+          },
+          transformResponse: [data => data]
+      })
+      response.data = JSONbig.parse(response.data)
+      response.data.forEach((food: Food) => {
+          food.id = food.id.toString()
+          food.user = food.user.toString()
+      })
+      return response.data
+  } catch (error: any) {
+      throw (error.response?.data)
+  }
+
+    
+}
+
 export async function get_today_foods({ token }: { token: string }) {
   try {
       const response = await axios.get(`${BASE_URL}/foods/today/`, {

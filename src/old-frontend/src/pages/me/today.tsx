@@ -1,10 +1,15 @@
 import MainLayout from '@/layout/MainLayout'
-import { Food, User, create_food, delete_food, get_today_foods, get_user } from '@/utils/api'
+import { Food, User, create_food, delete_food, get_foods_by_date, get_user } from '@/utils/api'
 import { AddCircle , Delete } from '@mui/icons-material'
 import { CircularProgress, CircularProgressProps, Container, Divider, FormControl, FormGroup, IconButton, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, Snackbar, Table, TableBody, TableCell, TableHead, TableRow, TextField, Tooltip, Typography, circularProgressClasses, styled, tableCellClasses } from '@mui/material'
 import { Box } from '@mui/system'
 import React from 'react'
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import moment from 'moment'
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -104,6 +109,8 @@ const Today = ({ darkMode, toggleDarkMode }: Props) => {
         error: null
     });
 
+    const [date, setDate] = React.useState(new Date());
+
     const [api, setApi] = React.useState(true);
 
     const CATEG = ['breakfast', 'lunch', 'snacks', 'dinner']
@@ -122,7 +129,7 @@ const Today = ({ darkMode, toggleDarkMode }: Props) => {
             ...state,
             error: 'Please fill all fields'
         })
-        create_food({ token, name: state.food, category: state.foodType, date: new Date().toISOString().slice(0, 10) }).then((res) => {
+        create_food({ token, name: state.food, category: state.foodType, date: date.toISOString().slice(0, 10) }).then((res) => {
             setState({
                 ...state,
                 foods: [...state.foods, res],
@@ -174,7 +181,7 @@ const Today = ({ darkMode, toggleDarkMode }: Props) => {
         const token = localStorage.getItem('token')
         const id = localStorage.getItem('id')
         if (!token || !id) return window.location.replace('/accounts/login')
-        get_today_foods({ token }).then((res) => {
+        get_foods_by_date({ token, date: date.toISOString().slice(0, 10) }).then((res) => {
             let calories = 0
             res.forEach((food: Food) => {
                 calories += food.calorie
@@ -197,13 +204,46 @@ const Today = ({ darkMode, toggleDarkMode }: Props) => {
             console.log(err)
             if(!err) setApi(false)
         })
-    },[])
+    },[date])
     return (
     <MainLayout darkMode={darkMode} toggleDarkMode={toggleDarkMode}>
         <Container className='w-[100vw] relative'>
             {!api &&
             <Typography variant='h3' className='text-center text-red-500 font-bold'>Failed to connect with the api!</Typography>}
-            <Typography variant='h4' className='text-center font-bold'>Today</Typography>
+            <Typography variant='h4' className='text-center font-bold mb-4'>
+                {date.toISOString().slice(0, 10) === new Date().toISOString().slice(0, 10) ? 'Today' : moment(date, 'YYYY-MM-DD').format('MMMM DD, YYYY')}
+            </Typography>
+            <Box className='flex items-center justify-center'>
+                <LocalizationProvider dateAdapter={AdapterMoment}>
+                    <MobileDatePicker disableFuture
+                    className='flex md:hidden'
+                    label="Select Date"
+                    value={date}
+                    inputFormat='YYYY-MM-DD'
+                    onChange={(newValue) => {
+                        if(!newValue) return
+                        setDate(newValue)
+                    }}
+                    renderInput={(params) => <TextField {...params} />}
+                    />
+                    <DesktopDatePicker disableFuture
+                    className='md:flex hidden'
+                    label="Select Date"
+                    value={date}
+                    inputFormat='YYYY-MM-DD'
+                    onChange={(newValue) => {
+                        if(!newValue) return
+                        setDate(newValue)
+                    }}
+                    componentsProps={{
+                        actionBar: {
+                            actions: ['today']
+                        }
+                    }}
+                    renderInput={(params) => <TextField {...params} />}
+                    />
+                </LocalizationProvider>
+            </Box>
             <Box className='flex justify-center items-center overflow-auto mt-3'>
                 <Typography variant='h6' className='font-bold mr-4'>Total Calories: <span className={state.max_calories >= state.calories ? 'text-blue-500': 'text-red-500'}>{state.calories.toFixed(2)}</span>/<strong>{state.max_calories}</strong></Typography>
                 <CircularProgressWithLabel value={state.calories*100/state.max_calories} size={60} />
@@ -247,7 +287,7 @@ const Today = ({ darkMode, toggleDarkMode }: Props) => {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {state.foods.filter((food: Food) => food.category === categ).map((food: Food) => {
+                                        {state.foods.filter((food: Food) => (food.category === categ)).map((food: Food) => {
                                             return (
                                                 <StyledTableRow key={food.id}>
                                                     <StyledTableCell component="th" scope="row">

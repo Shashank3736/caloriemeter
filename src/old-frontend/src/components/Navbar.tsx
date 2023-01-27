@@ -104,7 +104,7 @@ const Navbar = ({darkMode, toggleDarkMode}: {darkMode: 'light' | 'dark', toggleD
                     <Image src="/favicon.ico" alt="Logo" width={32} height={32} />
                     <span className="ml-3 font-semibold text-2xl">{name}</span>
                 </a>
-                <nav className="hidden md:flex items-center text-base justify-center space-x-4">
+                <nav className="hidden lg:flex items-center text-base justify-center space-x-4">
                     {links.map((link) => {
                         return (
                             <Button color='inherit' href={link.href} key={link.name} startIcon={link.icon}>{link.name}</Button>
