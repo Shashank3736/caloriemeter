@@ -29,6 +29,18 @@ export type Food = {
     calorie: number;
 };
 
+export async function check_status() {
+    try {
+        const response = await axios.get(`${BASE_URL}`, {
+            transformResponse: [data => data]
+        })
+        response.data = JSONbig.parse(response.data)
+        return response.data
+    } catch (error: any) {
+        throw (error.response?.data)
+    }
+}
+
 export async function get_users({ token }: { token: string }) {
   try {
       const response = await axios.get(`${BASE_URL}/users/`, {
