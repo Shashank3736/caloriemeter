@@ -14,7 +14,3 @@ psycopg = {extras = ["binary"], version = "*"}
 psycopg2 = "*"
 gunicorn = "*"
 
-[dev-packages]
-
-[requires]
-python_version = "3.11"
