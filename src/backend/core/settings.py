@@ -30,7 +30,8 @@ ALLOWED_HOSTS = [
     '127.0.0.1', 
     'localhost',
     'api.cm.shreyashraj.com',
-    '159.65.149.14'
+    '64.227.132.28',
+    '0.0.0.0'
 ]
 
 
