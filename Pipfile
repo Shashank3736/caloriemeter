@@ -12,6 +12,7 @@ python-dotenv = "*"
 pillow = "*"
 psycopg = {extras = ["binary"], version = "*"}
 psycopg2 = "*"
+gunicorn = "*"
 
 [dev-packages]
 

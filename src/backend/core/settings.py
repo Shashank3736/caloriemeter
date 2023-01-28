@@ -26,7 +26,12 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG') == '1'
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = [
+    '127.0.0.1', 
+    'localhost',
+    'api.cm.shreyashraj.com',
+    '159.65.149.14'
+]
 
 
 # Application definition
@@ -85,7 +90,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'caloriemeter', 
-        'USER': 'postgres', 
+        'USER': 'shashank',
         'PASSWORD': '7488579605',
         'HOST': 'localhost', 
         'PORT': '5432',
