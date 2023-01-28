@@ -1,7 +1,7 @@
 import axios from 'axios';
 import JSONbig from 'json-bigint';
 
-const BASE_URL = 'http://64.227.132.28:8000/api';
+const BASE_URL = 'https://api.cm.shreyashraj.com/api';
 
 export type User = {
     id: string;
