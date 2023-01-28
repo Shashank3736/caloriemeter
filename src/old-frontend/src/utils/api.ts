@@ -1,8 +1,7 @@
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import JSONbig from 'json-bigint';
-import { Url } from 'url';
 
-const BASE_URL = 'http://127.0.0.1:8000/api';
+const BASE_URL = 'http://64.227.132.28:8000/api/';
 
 export type User = {
     id: string;
