@@ -10,6 +10,8 @@ django-cors-headers = "*"
 requests = "*"
 python-dotenv = "*"
 pillow = "*"
+psycopg = {extras = ["binary"], version = "*"}
+psycopg2 = "*"
 
 [dev-packages]
 
