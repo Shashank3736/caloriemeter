@@ -106,6 +106,11 @@ const Today = ({ darkMode, toggleDarkMode }: Props) => {
             setError(err || 'Failed to connect with the api!')
             console.log(err)
             if(!err) setApi(false)
+            else {
+                localStorage.removeItem('token')
+                localStorage.removeItem('id')
+                window.location.replace('/accounts/login')
+            }
         })
     },[date])
     return (

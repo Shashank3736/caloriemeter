@@ -95,6 +95,13 @@ const Navbar = ({darkMode, toggleDarkMode}: {darkMode: 'light' | 'dark', toggleD
             setUser(res);
             setUpdateUser({ ...updateUser,...res, profile: null});
         })
+        .catch((err: any) => {
+            if(err) {
+                localStorage.removeItem('token')
+                localStorage.removeItem('id')
+                window.location.reload()
+            }
+        })
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     return (
