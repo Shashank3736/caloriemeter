@@ -30,7 +30,7 @@ export type Food = {
 
 export async function check_status() {
     try {
-        const response = await axios.get(`${BASE_URL}`, {
+        const response = await axios.get(`${BASE_URL}/`, {
             transformResponse: [data => data]
         })
         response.data = JSONbig.parse(response.data)
