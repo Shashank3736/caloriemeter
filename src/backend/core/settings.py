@@ -29,7 +29,7 @@ DEBUG = os.environ.get('DEBUG') == '1'
 ALLOWED_HOSTS = [
     '127.0.0.1', 
     'localhost',
-    'api.shreyashraj.com',
+    'api.cm.shreyashraj.com',
     '64.227.132.28',
     '0.0.0.0'
 ]
@@ -156,7 +156,7 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 # CORS
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = ['*']
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = ['https://cm.shreyashraj.com']
 
 # Add dotenv to load environment variables
 import dotenv
