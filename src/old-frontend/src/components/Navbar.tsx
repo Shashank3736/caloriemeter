@@ -108,8 +108,8 @@ const Navbar = ({darkMode, toggleDarkMode}: {darkMode: 'light' | 'dark', toggleD
         <header>
             <div className="container px-4 mx-auto flex justify-between items-center">
                 <a className="flex items-center text-black dark:text-white mb-4 md:mb-0 no-underline" href='/'>
-                    <Image src="/favicon.ico" alt="Logo" width={32} height={32} />
-                    <span className="ml-3 font-semibold text-2xl">{name}</span>
+                    <Image src="/icon.ico" alt="Logo" className='rounded-full' width={32} height={32} />
+                    <span className="ml-3 font-semibold text-2xl rounded-full">{name}</span>
                 </a>
                 <nav className="hidden lg:flex items-center text-base justify-center space-x-4">
                     {links.map((link) => {

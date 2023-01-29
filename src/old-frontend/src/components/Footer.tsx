@@ -12,7 +12,7 @@ const Footer = () => {
     <footer className=''>
         <div className="container px-5 mx-auto flex items-center sm:flex-row flex-col">
             <Link className='flex font-medium items-center md:justify-start justify-center no-underline text-gray-900 dark:text-white' href="/">
-                <Image src="/favicon.ico" alt="Logo" width={32} height={32} />
+                <Image src="/icon.ico" alt="Logo" className='rounded-full' width={32} height={32} />
                 <span className="ml-3 text-xl">{name}</span>
             </Link>
             <p className="text-sm text-gray-500 sm:ml-4 sm:pl-4 sm:py-2 sm:border-solid border-0 sm:border-l-2 sm:border-gray-200 mt-4">© {new Date().getFullYear()} Caloriemeter —
