@@ -13,4 +13,3 @@ pillow = "*"
 psycopg = {extras = ["binary"], version = "*"}
 psycopg2 = "*"
 gunicorn = "*"
-
