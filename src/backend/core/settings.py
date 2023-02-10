@@ -90,10 +90,10 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'caloriemeter', 
+        'NAME': 'caloriemeter',
         'USER': 'shashank',
-        'PASSWORD': '7488579605',
-        'HOST': 'localhost', 
+        'PASSWORD': os.environ.get('PSQL_PASS'),
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }
