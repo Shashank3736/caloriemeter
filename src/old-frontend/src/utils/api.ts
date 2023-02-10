@@ -174,16 +174,16 @@ export async function update_user({ token, id, username, password, email, max_ca
     if(email) formData['email'] = email;
     if(max_calories) formData['max_calories'] = max_calories;
     if(profile) formData['profile'] = profile;
-      const response = await axios.patch(`${BASE_URL}/users/${id}/`, formData, {
-          headers: {
-              Authorization: `Token ${token}`,
-              'Content-Type': 'multipart/form-data'
-          },
-          transformResponse: [data => data]
-      })
-      response.data = JSONbig.parse(response.data)
-      response.data.id = response.data.id.toString()
-      return response.data
+    const response = await axios.patch(`${BASE_URL}/users/${id}/`, formData, {
+        headers: {
+            Authorization: `Token ${token}`,
+            'Content-Type': 'multipart/form-data'
+        },
+        transformResponse: [data => data]
+    })
+    response.data = JSONbig.parse(response.data)
+    response.data.id = response.data.id.toString()
+    return response.data
   } catch (error: any) {
       throw (error.response?.data)
   }
