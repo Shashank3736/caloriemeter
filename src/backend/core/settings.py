@@ -157,6 +157,8 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = ['*']
 CORS_ALLOWED_ORIGINS = ['https://cm.shreyashraj.com']
+if DEBUG:
+    CORS_ALLOWED_ORIGINS = ['http://localhost:3000']
 
 # Add dotenv to load environment variables
 import dotenv
