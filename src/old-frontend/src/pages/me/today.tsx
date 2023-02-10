@@ -1,8 +1,7 @@
 import MainLayout from '@/layout/MainLayout'
 import { Food, User, create_food, delete_food, get_foods_by_date, get_user } from '@/utils/api'
 import { AddCircle , Delete } from '@mui/icons-material'
-import { Container, Divider, FormControl, FormGroup, IconButton, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, Snackbar, Table, TableBody, TableHead, TableRow, TextField, Tooltip, Typography } from '@mui/material'
-import { Box } from '@mui/system'
+import { Container, Divider, FormControl, Box, IconButton, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, Snackbar, Table, TableBody, TableHead, TableRow, TextField, Tooltip, Typography } from '@mui/material'
 import React, {useState, useEffect} from 'react'
 import moment from 'moment'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
@@ -44,7 +43,8 @@ const Today = ({ darkMode, toggleDarkMode }: Props) => {
         else if(event.target.value === 'dinner') setState({...state, foodType: 'dinner'})
     };
 
-    function addFood() {
+    function addFood(e: HTMLFormElement) {
+        e.preventDefault();
         const token = localStorage.getItem('token')
         if (!token) return window.location.replace('/accounts/login')
         if (!state.foodType || !state.food) return setError('Please fill all the fields!')
@@ -152,13 +152,13 @@ const Today = ({ darkMode, toggleDarkMode }: Props) => {
                     />
                 </LocalizationProvider>
             </Box>
-            <Box className='flex justify-center items-center overflow-auto mt-3'>
+            <Box component='form' className='flex justify-center items-center overflow-auto mt-3'>
                 <Typography variant='h6' className='font-bold mr-4'>Total Calories: <span className={maxCalories >= calories ? 'text-blue-500': 'text-red-500'}>{calories.toFixed(2)}</span>/<strong>{maxCalories}</strong></Typography>
                 <CircularProgressWithLabel value={calories*100/maxCalories} size={60} />
             </Box>
             {/* Divider */}
             <Divider className='my-5' />
-            <FormGroup className='flex md:flex-row mx-auto items-center justify-center'>
+            <Box component='form' onSubmit={(e) => addFood(e)} className='flex md:flex-row mx-auto items-center justify-center'>
                 <FormControl className='w-[15vw] min-w-[150px]'>
                     <InputLabel id='food-type'>Type</InputLabel>
                     <Select id='select-food-type' labelId='food-type' label='Type' value={state.foodType} onChange={handleTypeChange}>
@@ -172,14 +172,14 @@ const Today = ({ darkMode, toggleDarkMode }: Props) => {
                 InputProps={{
                     endAdornment:
                     <Tooltip title='Add Food'> 
-                        <IconButton onClick={addFood}>
+                        <IconButton type='submit'>
                             <AddCircle color='inherit' />
                         </IconButton>
                     </Tooltip>
                 }}
                 onChange={(e) => setState({ ...state, food: e.target.value })}
                 />
-            </FormGroup>
+            </Box>
             <Box className='flex flex-wrap py-10'>
                 {CATEG.map((categ) => {
                     return (
