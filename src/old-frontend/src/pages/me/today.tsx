@@ -2,7 +2,7 @@ import MainLayout from '@/layout/MainLayout'
 import { Food, User, create_food, delete_food, get_foods_by_date, get_user } from '@/utils/api'
 import { AddCircle , Delete } from '@mui/icons-material'
 import { Container, Divider, FormControl, Box, IconButton, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, Snackbar, Table, TableBody, TableHead, TableRow, TextField, Tooltip, Typography } from '@mui/material'
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, FormEvent} from 'react'
 import moment from 'moment'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -43,7 +43,7 @@ const Today = ({ darkMode, toggleDarkMode }: Props) => {
         else if(event.target.value === 'dinner') setState({...state, foodType: 'dinner'})
     };
 
-    function addFood(e: HTMLFormElement) {
+    function addFood(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
         const token = localStorage.getItem('token')
         if (!token) return window.location.replace('/accounts/login')
