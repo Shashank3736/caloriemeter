@@ -1,5 +1,4 @@
 from rest_framework import serializers
-# from django.contrib.auth.models import User
 from .models import CustomUser as User
 from rest_framework.authtoken.models import Token
 
@@ -10,6 +9,11 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
     
     def create(self, validated_data):
+        email = validated_data.get('email')
+
+        if email and User.objects.filter(email=email).exists():
+            raise serializers.ValidationError({'email': 'Email already exists'})
+        
         user = User.objects.create_user(**validated_data)
         return user
     
