@@ -1,5 +1,4 @@
 from rest_framework import serializers
-# from django.contrib.auth.models import User
 from .models import CustomUser as User
 from rest_framework.authtoken.models import Token
 
@@ -10,6 +9,9 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
     
     def create(self, validated_data):
+        email = validated_data.get('email')
+        if not email:
+            validated_data['email'] = f"{validated_data['username']}@tempmailraj.com"
         user = User.objects.create_user(**validated_data)
         return user
     
@@ -22,14 +24,14 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
             user.save()
         return instance
     
-    def get_max_calories(self, obj):
-        return obj.max_calories if self.context['request'].user.id == obj.id else None
-    
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         if self.context['request'].user != instance:
             representation['email'] = None
             representation['max_calories'] = None
+        
+        if representation['email'].endswith('@tempmailraj.com'):
+            representation['email'] = None
         return representation
 
 class TokenSerializer(serializers.ModelSerializer):
