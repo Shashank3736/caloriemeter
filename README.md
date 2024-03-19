@@ -1,4 +1,23 @@
 # My Health Partner
+A full stack web application which can help users to authenticate and add calories.
+## Features
+- Backend
+  - Powerful and secure backend with Django and Django Rest Framework.
+  - Use of JWT to authenticate users.
+  - Support auto deletion of token after certain period of time for security reasons.
+  - API support for login and logout users.
+  - Support natural language processing to find calories for foods. e.g. `100g of rice`
+  - Create, read and delete calories data.
+  - CRUD user data.
+  - Powerful admin panel to maintain users and database.
+  - Support SQL in debug mode and PostgreSQL in production mode.
+  - CORS header protection to secure api from unauthorised website and protect from phishing.
+- Frontend
+  - Toggle between dark mode and light mode. (default system)
+  - Beautiful UI with the help of Google Material UI.
+  - Simple site with registration, login, home and today page.
+  - Powered by next.js 13.
+
 ## Dark Mode
 ### Home
 ![image](https://user-images.githubusercontent.com/58896906/214679985-e83e4e6f-1efe-4000-bc81-fd077b405100.png)
