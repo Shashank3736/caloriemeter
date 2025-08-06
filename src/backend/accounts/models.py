@@ -5,7 +5,7 @@ import random
 # Create your models here.
 class CustomUser(AbstractUser):
     id = models.BigAutoField(primary_key=True)
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True, blank=True)
     max_calories = models.FloatField(default=2_000)
     profile = models.ImageField(upload_to='static/profile_pics', blank=True, null=True)
 

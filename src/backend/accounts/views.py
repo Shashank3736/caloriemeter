@@ -1,4 +1,3 @@
-# from django.contrib.auth.models import User
 from .models import CustomUser as User
 from rest_framework import viewsets, permissions, generics
 from .serializers import UserSerializer, TokenSerializer
